@@ -2,3 +2,4 @@
 GDL.iml
 __pycache__/
 venv
+vk/config/vk_secrets.ini
