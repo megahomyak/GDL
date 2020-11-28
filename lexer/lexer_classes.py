@@ -130,7 +130,7 @@ class ConstantContext:
     """
 
     commands: Tuple["Command", ...]
-    command_descriptions: Dict[str, List[Callable]]
+    command_descriptions: Dict[str, List[Callable[[], str]]]
 
 
 class BaseMetadataElement(ABC):
