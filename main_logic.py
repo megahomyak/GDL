@@ -22,7 +22,13 @@ class MainLogic:
             logger: Optional[logging.Logger] = None):
         self.vk_worker = vk_worker
         self.logger = logger
-        self.commands: Tuple[Command, ...] = ()
+        self.commands: Tuple[Command, ...] = (
+            Command(
+                names=("инфо", "info"),
+                handler=handlers.send_bot_info,
+                description="показывает общую информацию о боте"
+            ),
+        )
         command_descriptions: Dict[str, List[Callable[[], str]]] = {}
         for command in self.commands:
             for name in command.names:
