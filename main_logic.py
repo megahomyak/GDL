@@ -53,6 +53,11 @@ class MainLogic:
                         ), SequenceArgType(StringArgType())
                     ),
                 )
+            ),
+            Command(
+                names=("памятка", "memo"),
+                handler=handlers.get_memo,
+                description="показывает памятку по использованию бота"
             )
         )
         command_descriptions: Dict[str, List[Callable[[], str]]] = {}

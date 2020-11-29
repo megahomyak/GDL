@@ -60,3 +60,9 @@ class Handlers:
             command.get_full_description(include_heading=True)
             for command in commands
         ]))
+
+    # noinspection PyMethodMayBeStatic
+    # because maybe in future I will use it as a normal method, so this prevents
+    # it from being called directly from the class
+    async def get_memo(self) -> HandlingResult:
+        return HandlingResult(vk_config.MEMO)

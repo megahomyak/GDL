@@ -24,3 +24,9 @@ DEBUG_CHAT_PEER_ID = int(_constants_config["ERRORS"]["debug_chat_peer_id"])
 
 with open("vk/config/bot_info.txt", "r", encoding="utf-8") as f:
     BOT_INFO = f.read()
+
+
+# Unpacking memo.txt
+
+with open("vk/config/memo.txt", "r", encoding="utf-8") as f:
+    MEMO = f.read()
