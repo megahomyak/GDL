@@ -9,7 +9,11 @@ import simple_avk
 
 import lexer
 from handlers.handlers import HandlingResult, Handlers
-from lexer.lexer_classes import Command, ConstantContext, Context
+from lexer.arg_implementations import SequenceArgType, StringArgType
+from lexer.constant_metadata_implementations import (
+    CommandsConstantMetadataElement, CommandDescriptionsConstantMetadataElement
+)
+from lexer.lexer_classes import Command, ConstantContext, Context, Arg
 from vk import vk_config
 from vk.dataclasses_ import Message
 from vk.vk_worker import VKWorker
@@ -28,6 +32,28 @@ class MainLogic:
                 handler=handlers.send_bot_info,
                 description="показывает общую информацию о боте"
             ),
+            Command(
+                names=("команды", "помощь", "help", "commands"),
+                handler=handlers.get_help_message,
+                description="показывает помощь по командам и их написанию",
+                constant_metadata=(CommandsConstantMetadataElement,)
+            ),
+            Command(
+                names=("команды", "помощь", "help", "commands"),
+                handler=handlers.get_help_message_for_specific_commands,
+                description=(
+                    "показывает помощь по конкретным командам и их написанию"
+                ),
+                constant_metadata=(CommandDescriptionsConstantMetadataElement,),
+                arguments=(
+                    Arg(
+                        (
+                            "команды, к которым нужно получить подсказку "
+                            "(через запятую)"
+                        ), SequenceArgType(StringArgType())
+                    ),
+                )
+            )
         )
         command_descriptions: Dict[str, List[Callable[[], str]]] = {}
         for command in self.commands:

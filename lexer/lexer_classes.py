@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from typing import Optional, Any, Tuple, Callable, Type, Dict, List, Awaitable
 
 import lexer.exceptions
-from handlers.handlers import HandlingResult
+from handlers.handler_helpers import HandlingResult
 from lexer.enums import GrammaticalCases
 
 
@@ -174,6 +174,14 @@ class BaseConstantMetadataElement(ABC):
         Returns:
             Any value
         """
+        pass
+
+
+class BaseConstantMetadata(ABC):
+
+    @staticmethod
+    @abstractmethod
+    def get_data_from_context(context: ConstantContext) -> Any:
         pass
 
 
