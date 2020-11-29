@@ -8,7 +8,8 @@ import aiohttp
 import simple_avk
 
 import lexer
-from handlers.handlers import HandlingResult, Handlers
+from handlers.handler_helpers import HandlingResult
+from handlers.handlers import Handlers
 from lexer.arg_implementations import SequenceArgType, StringArgType
 from lexer.constant_metadata_implementations import (
     CommandsConstantMetadataElement, CommandDescriptionsConstantMetadataElement
