@@ -46,7 +46,9 @@ class Handlers:
                         f"{', '.join(quoted_not_found_commands)} не найдены!"
                     ), *command_descriptions_as_strings
                 )
-            ) if quoted_not_found_commands else command_descriptions_as_strings
+            ) if quoted_not_found_commands else "\n".join(
+                command_descriptions_as_strings
+            )
         )
 
     # noinspection PyMethodMayBeStatic
