@@ -1,15 +1,16 @@
 from typing import Tuple, List, Dict, Callable
 
 from lexer.lexer_classes import (
-    BaseConstantMetadataElement, ConstantContext, Command
+    BaseConstantMetadataElement, ConstantContext
 )
+from main_logic_helpers import CommandsSection
 
 
 class CommandsConstantMetadataElement(BaseConstantMetadataElement):
 
     @staticmethod
     def get_data_from_constant_context(
-            context: ConstantContext) -> Tuple["Command", ...]:
+            context: ConstantContext) -> Tuple[CommandsSection, ...]:
         return context.commands
 
 

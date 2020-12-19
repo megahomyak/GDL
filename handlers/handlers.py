@@ -1,7 +1,9 @@
 from typing import Dict, List, Callable, Tuple
 
+# noinspection PyUnresolvedReferences
+# IDK why it thinks that handlers resolves to its containing file
 from handlers.handler_helpers import HandlingResult
-from lexer.lexer_classes import Command
+from main_logic_helpers import CommandsSection
 from vk import vk_config
 
 
@@ -54,11 +56,12 @@ class Handlers:
     # because maybe in future I will use it as a normal method, so this prevents
     # it from being called directly from the class
     async def get_help_message(
-            self,
-            commands: Tuple["Command", ...]) -> HandlingResult:
+            self, commands: Tuple[CommandsSection, ...]) -> HandlingResult:
         return HandlingResult("\n\n".join([
-            command.get_full_description(include_heading=True)
-            for command in commands
+            "• Команды бота:\n\n", *[
+                command.get_compact_command_descriptions()
+                for command in commands
+            ]
         ]))
 
     # noinspection PyMethodMayBeStatic

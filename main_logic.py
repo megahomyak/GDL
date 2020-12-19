@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+import itertools
 import logging
 import traceback
 from typing import NoReturn, Optional, List, Tuple, Dict, Callable
@@ -11,10 +12,12 @@ import lexer
 from handlers.handler_helpers import HandlingResult
 from handlers.handlers import Handlers
 from lexer.arg_implementations import SequenceArgType, StringArgType
+from lexer.command_class import Command
 from lexer.constant_metadata_implementations import (
     CommandsConstantMetadataElement, CommandDescriptionsConstantMetadataElement
 )
-from lexer.lexer_classes import Command, ConstantContext, Context, Arg
+from lexer.lexer_classes import ConstantContext, Context, Arg
+from main_logic_helpers import CommandsSection
 from vk import vk_config
 from vk.dataclasses_ import Message
 from vk.vk_worker import VKWorker
@@ -27,58 +30,84 @@ class MainLogic:
             logger: Optional[logging.Logger] = None):
         self.vk_worker = vk_worker
         self.logger = logger
-        self.commands: Tuple[Command, ...] = (
-            Command(
-                names=("инфо", "info"),
-                handler=handlers.send_bot_info,
-                description="показывает общую информацию о боте"
-            ),
-            Command(
-                names=("команды", "помощь", "help", "commands"),
-                handler=handlers.get_help_message,
-                description="показывает помощь по командам и их написанию",
-                constant_metadata=(CommandsConstantMetadataElement,)
-            ),
-            Command(
-                names=("команды", "помощь", "help", "commands"),
-                handler=handlers.get_help_message_for_specific_commands,
-                description=(
-                    "показывает помощь по конкретным командам и их написанию"
-                ),
-                constant_metadata=(CommandDescriptionsConstantMetadataElement,),
-                arguments=(
-                    Arg(
-                        (
-                            "команды, к которым нужно получить подсказку "
-                            "(через запятую)"
-                        ), SequenceArgType(StringArgType())
+        self.command_sections: Tuple[CommandsSection, ...] = (
+            CommandsSection(
+                "Ознакомление",
+                (
+                    Command(
+                        names=("памятка", "memo"),
+                        handler=handlers.get_memo,
+                        description="показывает памятку по использованию бота"
                     ),
                 )
             ),
-            Command(
-                names=("памятка", "memo"),
-                handler=handlers.get_memo,
-                description="показывает памятку по использованию бота"
+            CommandsSection(
+                "Информация",
+                (
+                    Command(
+                        names=("инфо", "info"),
+                        handler=handlers.send_bot_info,
+                        description="показывает общую информацию о боте"
+                    ),
+                )
+            ),
+            CommandsSection(
+                "Навигация",
+                (
+                    Command(
+                        names=("помощь", "help"),
+                        handler=handlers.get_help_message,
+                        description=(
+                            "показывает помощь по командам и их написанию"
+                        ),
+                        constant_metadata=(CommandsConstantMetadataElement,)
+                    ),
+                    Command(
+                        names=("помощь", "help"),
+                        handler=handlers.get_help_message_for_specific_commands,
+                        description=(
+                            "показывает помощь по конкретным командам и их "
+                            "написанию"
+                        ),
+                        constant_metadata=(
+                            CommandDescriptionsConstantMetadataElement,
+                        ),
+                        arguments=(
+                            Arg(
+                                (
+                                    "команды, к которым нужно получить "
+                                    "подсказку (через запятую)"
+                                ), SequenceArgType(StringArgType())
+                            ),
+                        )
+                    )
+                )
             )
         )
         command_descriptions: Dict[str, List[Callable[[], str]]] = {}
-        for command in self.commands:
-            for name in command.names:
-                try:
-                    command_descriptions[name].append(
-                        command.get_full_description
-                    )
-                except KeyError:
-                    command_descriptions[name] = [command.get_full_description]
+        for section in self.command_sections:
+            for command in section.commands:
+                for name in command.names:
+                    try:
+                        command_descriptions[name].append(
+                            command.get_full_description
+                        )
+                    except KeyError:
+                        command_descriptions[name] = [
+                            command.get_full_description
+                        ]
+        self.commands_list = list(itertools.chain(
+            *[section.commands for section in self.command_sections]
+        ))
         self.constant_context = ConstantContext(
-            self.commands, command_descriptions
+            self.command_sections, command_descriptions
         )
 
     async def handle_command(
             self, current_chat_peer_id: int, command: str,
             vk_message_info: dict) -> Message:
         error_args_amount = 0
-        for command_ in self.commands:
+        for command_ in self.commands_list:
             try:
                 converted_command = command_.convert_command_to_args(command)
             except lexer.exceptions.ParsingError as parsing_error:
