@@ -44,8 +44,7 @@ class Handlers:
                         f"{quoted_not_found_commands[0]} не найдена!"
                         if len(quoted_not_found_commands) == 1 else
                         f"Команды с названиями "
-                        f"{', '.join(quoted_not_found_commands)} "
-                        f"не найдены!"
+                        f"{', '.join(quoted_not_found_commands)} не найдены!"
                     ), *command_descriptions_as_strings
                 )
             ) if quoted_not_found_commands else
@@ -59,8 +58,9 @@ class Handlers:
             self, commands: Tuple[CommandsSection, ...]) -> HandlingResult:
         return HandlingResult("\n\n".join([
             "• Команды бота:\n\n", *[
-                command.get_compact_command_descriptions()
-                for command in commands
+                command.get_compact_command_descriptions(
+                    add_dot_before_name=True
+                ) for command in commands
             ]
         ]))
 
