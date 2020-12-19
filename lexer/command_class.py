@@ -158,7 +158,7 @@ class Command:
         additional_names = ", ".join([
             f"или {name}" for name in self.names[1:]
         ]) if len(self.names) > 1 else ""
-        arguments = [f"[{arg.description}]" for arg in self.arguments]
+        arguments = [f"[{arg.name}]" for arg in self.arguments]
         return " ".join(filter(None, [
             f"/{self.names[0]}", f"({additional_names})", *arguments,
             f" - {self.description}" if self.description else ""
