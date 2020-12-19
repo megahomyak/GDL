@@ -45,8 +45,7 @@ class Handlers:
                         f"Команды с названиями "
                         f"{', '.join(quoted_not_found_commands)} не найдены!"
                     ), *command_descriptions_as_strings
-                )
-            ) if quoted_not_found_commands else "\n".join(
+                ) if quoted_not_found_commands else
                 command_descriptions_as_strings
             )
         )
