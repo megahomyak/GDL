@@ -90,11 +90,11 @@ class MainLogic:
                 for name in command.names:
                     try:
                         command_descriptions[name].append(
-                            command.get_full_description
+                            command.get_short_full_description
                         )
                     except KeyError:
                         command_descriptions[name] = [
-                            command.get_full_description
+                            command.get_short_full_description
                         ]
         self.commands_list = list(itertools.chain(
             *[section.commands for section in self.command_sections]

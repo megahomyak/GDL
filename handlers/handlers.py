@@ -27,10 +27,11 @@ class Handlers:
             try:
                 command_descriptions_as_strings.extend(
                     (
-                        # Here desc_func is a Command.get_full_description,
-                        # if I set Command.get_full_description as a type -
+                        # Here desc_func is a
+                        # Command.get_short_full_description, if I set
+                        # Command.get_short_full_description as a type -
                         # I wouldn't get any IDE hints anyway
-                        desc_func(include_heading=True)
+                        desc_func()
                         for desc_func in command_descriptions[command_name]
                     )
                 )
