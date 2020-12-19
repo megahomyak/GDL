@@ -1,13 +1,15 @@
+import typing
 from dataclasses import dataclass
 from typing import Tuple
 
-from lexer.command_class import Command
+if typing.TYPE_CHECKING:
+    from lexer.command_class import Command
 
 
 @dataclass
 class CommandsSection:
     name: str
-    commands: Tuple[Command, ...]
+    commands: Tuple["Command", ...]
 
     def get_compact_command_descriptions(
             self, add_dot_before_name: bool = False) -> str:

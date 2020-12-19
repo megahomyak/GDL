@@ -1,5 +1,7 @@
 from typing import Dict, List, Callable, Tuple
 
+# noinspection PyUnresolvedReferences
+# IDK why it thinks that handlers resolves to its containing file
 from handlers.handler_helpers import HandlingResult
 from main_logic_helpers import CommandsSection
 from vk import vk_config
