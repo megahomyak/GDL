@@ -2,6 +2,7 @@ import asyncio
 import datetime
 import itertools
 import logging
+import sys
 import traceback
 from typing import NoReturn, Optional, List, Tuple, Dict, Callable
 
@@ -186,8 +187,17 @@ class MainLogic:
                     self.future_done_callback(peer_id, text, future)
                 ))
 
+    async def send_commands_from_stdin(self) -> NoReturn:
+        while True:
+            message_text = input("Enter the command: ")
+            output = await self.handle_command(
+                # Fake peer_id and vk_message_info
+                123, message_text, {"from_id": 456}
+            )
+            print(output.text)
 
-async def main():
+
+async def main(debug: bool = False):
     async with aiohttp.ClientSession() as aiohttp_session:
         vk_worker = VKWorker(
             simple_avk.SimpleAVK(
@@ -205,8 +215,11 @@ async def main():
             Handlers(),
             logging.getLogger("command_handling_errors")
         )
-        await main_logic.listen_for_vk_events()
+        if debug:
+            await main_logic.send_commands_from_stdin()
+        else:
+            await main_logic.listen_for_vk_events()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    asyncio.run(main(debug="--local" in sys.argv))
