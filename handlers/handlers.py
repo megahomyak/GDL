@@ -56,7 +56,7 @@ class Handlers:
     async def get_help_message(
             self, commands: Tuple[CommandsSection, ...]) -> HandlingResult:
         return HandlingResult("\n\n".join([
-            "• Команды бота:\n\n", *[
+            "• Команды бота:", *[
                 command.get_compact_command_descriptions(
                     add_dot_before_name=True
                 ) for command in commands
