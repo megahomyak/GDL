@@ -13,10 +13,10 @@ import lexer
 from handlers.handler_helpers import HandlingResult
 from handlers.handlers import Handlers
 from lexer.arg_implementations import SequenceArgType, StringArgType
-from lexer.command_class import Command
 from lexer.constant_metadata_implementations import (
     CommandsConstantMetadataElement, CommandDescriptionsConstantMetadataElement
 )
+from lexer.lexer_classes import Command
 from lexer.lexer_classes import ConstantContext, Context, Arg
 from main_logic_helpers import CommandsSection
 from vk import vk_config

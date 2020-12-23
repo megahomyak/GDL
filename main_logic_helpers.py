@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from typing import Tuple
 
 if typing.TYPE_CHECKING:
-    from lexer.command_class import Command
+    from lexer.lexer_classes import Command
 
 
 @dataclass
