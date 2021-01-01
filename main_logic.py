@@ -19,6 +19,7 @@ from lexer.constant_metadata_implementations import (
 from lexer.lexer_classes import Command
 from lexer.lexer_classes import ConstantContext, Context, Arg
 from main_logic_helpers import CommandsSection
+from requests_workers.requests_worker import RequestsWorker
 from vk import vk_config
 from vk.dataclasses_ import Message
 from vk.vk_worker import VKWorker
@@ -222,4 +223,5 @@ async def main(debug: bool = False):
 
 
 if __name__ == "__main__":
-    asyncio.run(main(debug="--local" in sys.argv))
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main(debug="--local" in sys.argv))
