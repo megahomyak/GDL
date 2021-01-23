@@ -84,6 +84,18 @@ class MainLogic:
                         )
                     )
                 )
+            ),
+            CommandsSection(
+                "Мобильный демонлист",
+                (
+                    Command(
+                        names=("мдемонлист", "mdemonlist"),
+                        handler=handlers.get_mobile_demonlist,
+                        description=(
+                            "показывает список демонов из мобильного демонлиста"
+                        )
+                    ),
+                )
             )
         )
         command_descriptions: Dict[str, List[Callable[[], str]]] = {}
@@ -213,7 +225,7 @@ async def main(debug: bool = False):
         )
         main_logic = MainLogic(
             vk_worker,
-            Handlers(),
+            Handlers(RequestsWorker(aiohttp_session)),
             logging.getLogger("command_handling_errors")
         )
         if debug:

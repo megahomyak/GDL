@@ -4,10 +4,14 @@ from typing import Dict, List, Callable, Tuple
 # IDK why it thinks that handlers resolves to its containing file
 from handlers.handler_helpers import HandlingResult
 from main_logic_helpers import CommandsSection
+from requests_workers.requests_worker import RequestsWorker
 from vk import vk_config
 
 
 class Handlers:
+
+    def __init__(self, requests_worker: RequestsWorker):
+        self.requests_worker = requests_worker
 
     # noinspection PyMethodMayBeStatic
     # because maybe in future I will use it as a normal method, so this prevents
@@ -68,3 +72,12 @@ class Handlers:
     # it from being called directly from the class
     async def get_memo(self) -> HandlingResult:
         return HandlingResult(vk_config.MEMO)
+
+    async def get_mobile_demonlist(self) -> HandlingResult:
+        return HandlingResult("\n".join(
+            f"{demon_index + 1}. \"{demon.name}\" от {demon.authors}"
+            f"{' и других' if demon.there_is_more_authors else ''}"
+            for demon_index, demon in enumerate(
+                await self.requests_worker.get_mobile_demons()
+            )
+        ))
