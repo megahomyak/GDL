@@ -1,8 +1,10 @@
 from typing import Dict, List, Callable, Tuple
 
+from asyncstdlib import enumerate as async_enumerate
+
 # noinspection PyUnresolvedReferences
 # IDK why it thinks that handlers resolves to its containing file
-from handlers.handler_helpers import HandlingResult
+from handlers.handler_helpers import HandlingResult, async_join
 from main_logic_helpers import CommandsSection
 from requests_workers.requests_worker import RequestsWorker
 from vk import vk_config
@@ -75,10 +77,14 @@ class Handlers:
         return HandlingResult(vk_config.MEMO)
 
     async def get_mobile_demonlist(self) -> HandlingResult:
-        return HandlingResult("\n".join(
-            f"{demon_index + 1}. \"{demon.name}\" от {demon.authors}"
-            f"{' и других' if demon.there_is_more_authors else ''}"
-            for demon_index, demon in enumerate(
-                await self.requests_worker.get_mobile_demons()
-            )
+        # noinspection PyTypeChecker
+        # because this is an ASYNC GENERATOR, YOU FUCKING BASTARD!
+        return HandlingResult(await async_join(
+            (
+                f"{demon_index}. \"{demon.name}\" от {demon.authors}"
+                f"{' и других' if demon.there_is_more_authors else ''}"
+                async for demon_index, demon in async_enumerate(
+                    self.requests_worker.get_mobile_demons(), start=1
+                )
+            ), separator="\n"
         ))

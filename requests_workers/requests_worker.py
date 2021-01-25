@@ -1,9 +1,12 @@
-from typing import List
+import re
+from typing import AsyncGenerator, Any
 
 import aiohttp
 import bs4
 
 from requests_workers.dataclasses_ import DemonInfo, Completion
+
+GET_POINTS_AMOUNT_REGEX = re.compile(r"\(~(\d+.?\d*) ?points\)")
 
 
 class RequestsWorker:
@@ -11,7 +14,7 @@ class RequestsWorker:
     def __init__(self, aiohttp_session: aiohttp.ClientSession):
         self.aiohttp_session = aiohttp_session
 
-    async def get_mobile_demons(self) -> List[DemonInfo]:
+    async def get_mobile_demons(self) -> AsyncGenerator[DemonInfo, Any]:
         soup = bs4.BeautifulSoup(
             await (
                 await self.aiohttp_session.get(
@@ -20,7 +23,6 @@ class RequestsWorker:
                 )
             ).text(), "html.parser"
         )
-        demons = []
         # noinspection SpellCheckingInspection
         for raw_demon_info in soup.find_all(class_="vhaaFf qUO6Ue"):
             title, points, *completion_strings = raw_demon_info.stripped_strings
@@ -56,18 +58,14 @@ class RequestsWorker:
                         last_nickname = None
                     else:  # Part we're parsing now is a nickname
                         last_nickname = string[:-2]  # Removing " -"
-            try:  # TODO: THIS IS A WORKAROUND, REMOVE, WHEN GETS FIXED ON SITE
-                points = float(points.split()[0][2:])  # Removing "(~"
-            except ValueError:
-                points = float(points.split()[0][2:7])
-            demons.append(
-                DemonInfo(
-                    name=demon_name, is_old=is_old, authors=authors_string,
-                    there_is_more_authors=there_is_more_authors,
-                    points=points, completed_by=pure_completions
-                )
+            points_amount = float(
+                re.match(GET_POINTS_AMOUNT_REGEX, points).group(1)
             )
-        return demons
+            yield DemonInfo(
+                name=demon_name, is_old=is_old, authors=authors_string,
+                there_is_more_authors=there_is_more_authors,
+                points=points_amount, completed_by=pure_completions
+            )
 
 
 if __name__ == '__main__':
@@ -77,7 +75,8 @@ if __name__ == '__main__':
     async def main():
         async with aiohttp.ClientSession() as session:
             rw = RequestsWorker(session)
-            print(await rw.get_mobile_demons())
+            async for demon_info in rw.get_mobile_demons():
+                print(demon_info)
 
 
     loop = asyncio.get_event_loop()
