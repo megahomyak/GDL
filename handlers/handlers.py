@@ -58,12 +58,13 @@ class Handlers:
     # because maybe in future I will use it as a normal method, so this prevents
     # it from being called directly from the class
     async def get_help_message(
-            self, commands: Tuple[CommandsSection, ...]) -> HandlingResult:
+            self,
+            command_sections: Tuple[CommandsSection, ...]) -> HandlingResult:
         return HandlingResult("\n\n".join([
             "• Команды бота:", *[
                 command.get_compact_command_descriptions(
                     add_dot_before_name=True
-                ) for command in commands
+                ) for command in command_sections
             ]
         ]))
 
