@@ -2,8 +2,7 @@ from typing import Dict, List, Callable, Tuple
 
 from asyncstdlib import enumerate as async_enumerate
 
-# noinspection PyUnresolvedReferences
-# IDK why it thinks that handlers resolves to its containing file
+from handlers import constants
 from handlers.handler_helpers import HandlingResult, async_join
 from main_logic_helpers import CommandsSection
 from requests_workers.requests_worker import RequestsWorker
