@@ -1,11 +1,9 @@
-import re
 from dataclasses import dataclass
 from typing import Generator
 
 import bs4
 
 from requests_workers.dataclasses_ import DemonInfo, Completion
-from requests_workers.requests_worker import GET_POINTS_AMOUNT_REGEX
 from vk.dataclasses_ import Message
 
 
@@ -55,9 +53,7 @@ def get_demons_info_from_bs4(
                     last_nickname = None
                 else:  # Part we're parsing now is a nickname
                     last_nickname = string[:-2]  # Removing " -"
-        points_amount = float(
-            re.match(GET_POINTS_AMOUNT_REGEX, points).group(1)
-        )
+        points_amount = float(points[2:-8])  # Removing "(~" and " points)"
         yield DemonInfo(
             name=demon_name, is_old=is_old, authors=authors_string,
             there_is_more_authors=there_is_more_authors,

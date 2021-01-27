@@ -1,9 +1,5 @@
-import re
-
 import aiohttp
 import bs4
-
-GET_POINTS_AMOUNT_REGEX = re.compile(r"\(~(\d+.?\d*) ?points\)")
 
 
 class RequestsWorker:
