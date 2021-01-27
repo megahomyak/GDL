@@ -1,9 +1,7 @@
 from typing import Dict, List, Callable, Tuple
 
-from asyncstdlib import enumerate as async_enumerate
-
-from handlers import constants
-from handlers.handler_helpers import HandlingResult, async_join
+from handlers import handler_helpers
+from handlers.handler_helpers import HandlingResult
 from main_logic_helpers import CommandsSection
 from requests_workers.requests_worker import RequestsWorker
 from vk import vk_config
@@ -76,14 +74,11 @@ class Handlers:
         return HandlingResult(vk_config.MEMO)
 
     async def get_mobile_demonlist(self) -> HandlingResult:
-        # noinspection PyTypeChecker
-        # because this is an ASYNC GENERATOR, YOU FUCKING BASTARD!
-        return HandlingResult(await async_join(
-            (
-                f"{demon_index}. \"{demon.name}\" от {demon.authors}"
-                f"{' и других' if demon.there_is_more_authors else ''}"
-                async for demon_index, demon in async_enumerate(
-                    self.requests_worker.get_mobile_demons(), start=1
-                )
-            ), separator="\n"
+        site = await self.requests_worker.get_mobile_demons_site()
+        return HandlingResult("\n".join(
+            f"{demon_index}. \"{demon.name}\" от {demon.authors}"
+            f"{' и других' if demon.there_is_more_authors else ''}"
+            for demon_index, demon in enumerate(
+                handler_helpers.get_demons_info_from_bs4(site), start=1
+            )
         ))
