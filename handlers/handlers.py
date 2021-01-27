@@ -1,5 +1,6 @@
 from typing import Dict, List, Callable, Tuple
 
+from handlers import constants
 from handlers import handler_helpers
 from handlers.handler_helpers import HandlingResult
 from main_logic_helpers import CommandsSection
@@ -82,3 +83,31 @@ class Handlers:
                 handler_helpers.get_demons_info_from_bs4(site), start=1
             )
         ))
+
+    async def get_mobile_demon_info(self, demon_num: int) -> HandlingResult:
+        if demon_num > constants.MOBILE_DEMONS_AMOUNT or 1 > demon_num:
+            return HandlingResult("Неправильный номер демона!")
+        site = await self.requests_worker.get_mobile_demons_site()
+        demons_info_generator = handler_helpers.get_demons_info_from_bs4(site)
+        for _ in range(demon_num):
+            last_parsed_demon = next(demons_info_generator)
+        who_completed_this_demon = []
+        # noinspection PyUnboundLocalVariable
+        # because demon_num will be at least 1 (see condition above)
+        for completion_info in last_parsed_demon.completed_by:
+            if completion_info.amount_of_hertz == 60:
+                hertz_amount_text = ""
+            else:
+                hertz_amount_text = f" ({completion_info.amount_of_hertz} герц)"
+            who_completed_this_demon.append(
+                f"{completion_info.nickname}{hertz_amount_text} "
+                f"({completion_info.video_link})"
+            )
+        return HandlingResult(
+            f"{demon_num}. \"{last_parsed_demon.name}\""
+            f"{' (старый)' if last_parsed_demon.is_old else ''} от "
+            f"{last_parsed_demon.authors}"
+            f"{' и других' if last_parsed_demon.there_is_more_authors else ''}"
+            f" (~{last_parsed_demon.points} очков). А вот, кто этот уровень "
+            f"прошел: {', '.join(who_completed_this_demon)}."
+        )

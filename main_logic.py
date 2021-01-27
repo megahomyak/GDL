@@ -12,7 +12,7 @@ import simple_avk
 import lexer
 from handlers.handler_helpers import HandlingResult
 from handlers.handlers import Handlers
-from lexer.arg_implementations import SequenceArgType, StringArgType
+from lexer.arg_implementations import SequenceArgType, StringArgType, IntArgType
 from lexer.constant_metadata_implementations import (
     CommandsConstantMetadataElement, CommandDescriptionsConstantMetadataElement
 )
@@ -95,6 +95,22 @@ class MainLogic:
                             "показывает список демонов из мобильного демонлиста"
                         )
                     ),
+                    Command(
+                        names=("мдемон", "mdemon"),
+                        handler=handlers.get_mobile_demon_info,
+                        description=(
+                            "показывает информацию о демоне из мобильного "
+                            "демонлиста по номеру"
+                        ),
+                        arguments=(
+                            Arg(
+                                (
+                                    "номер демона, по которому надо получить "
+                                    "подробную информацию"
+                                ), IntArgType()
+                            ),
+                        )
+                    )
                 )
             )
         )
