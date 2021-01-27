@@ -16,7 +16,7 @@ class HandlingResult:
         return Message(self.text, peer_id)
 
 
-def get_demons_info_from_bs4(
+def get_demons_info_from_soup(
         soup: bs4.BeautifulSoup) -> Generator[DemonInfo, None, None]:
     # noinspection SpellCheckingInspection
     for raw_demon_info in soup.find_all(class_="vhaaFf qUO6Ue"):

@@ -81,7 +81,7 @@ class Handlers:
             f"{' (старый)' if demon.is_old else ''} от {demon.authors}"
             f"{' и других' if demon.there_is_more_authors else ''}"
             for demon_index, demon in enumerate(
-                handler_helpers.get_demons_info_from_bs4(site), start=1
+                handler_helpers.get_demons_info_from_soup(site), start=1
             )
         ))
 
@@ -89,7 +89,7 @@ class Handlers:
         if demon_num > constants.MOBILE_DEMONS_AMOUNT or 1 > demon_num:
             return HandlingResult("Неправильный номер демона!")
         site = await self.requests_worker.get_mobile_demons_site()
-        demons_info_generator = handler_helpers.get_demons_info_from_bs4(site)
+        demons_info_generator = handler_helpers.get_demons_info_from_soup(site)
         for _ in range(demon_num):
             last_parsed_demon = next(demons_info_generator)
         who_completed_this_demon = []
