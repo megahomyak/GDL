@@ -77,7 +77,8 @@ class Handlers:
     async def get_mobile_demonlist(self) -> HandlingResult:
         site = await self.requests_worker.get_mobile_demons_site()
         return HandlingResult("\n".join(
-            f"{demon_index}. \"{demon.name}\" от {demon.authors}"
+            f"{demon_index}. \"{demon.name}\""
+            f"{' (старый)' if demon.is_old else ''} от {demon.authors}"
             f"{' и других' if demon.there_is_more_authors else ''}"
             for demon_index, demon in enumerate(
                 handler_helpers.get_demons_info_from_bs4(site), start=1
