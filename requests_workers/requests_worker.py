@@ -27,7 +27,9 @@ if __name__ == '__main__':
         async with aiohttp.ClientSession() as session:
             rw = RequestsWorker(session)
             site = await rw.get_mobile_demons_site()
-            for demon_info in handler_helpers.get_demons_info_from_soup(site):
+            for demon_info in (
+                handler_helpers.get_mobile_demons_info_from_soup(site)
+            ):
                 print(demon_info)
 
 

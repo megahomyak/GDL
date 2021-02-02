@@ -81,21 +81,23 @@ class Handlers:
             f"{' (старый)' if demon.is_old else ''} от {demon.authors}"
             f"{' и других' if demon.there_is_more_authors else ''}"
             for demon_index, demon in enumerate(
-                handler_helpers.get_demons_info_from_soup(site), start=1
+                handler_helpers.get_mobile_demons_info_from_soup(
+                    site, get_compact_demon_info=True
+                ), start=1
             )
         ))
 
     async def get_mobile_demon_info(self, demon_num: int) -> HandlingResult:
         if demon_num > constants.MOBILE_DEMONS_AMOUNT or 1 > demon_num:
             return HandlingResult("Неправильный номер демона!")
-        site = await self.requests_worker.get_mobile_demons_site()
-        demons_info_generator = handler_helpers.get_demons_info_from_soup(site)
-        for _ in range(demon_num):
-            last_parsed_demon = next(demons_info_generator)
+        soup = await self.requests_worker.get_mobile_demons_site()
+        demon = handler_helpers.get_mobile_demon_info_from_soup_by_num(
+            soup, demon_num
+        )
         who_completed_this_demon = []
         # noinspection PyUnboundLocalVariable
         # because demon_num will be at least 1 (see condition above)
-        for completion_info in last_parsed_demon.completed_by:
+        for completion_info in demon.completed_by:
             if completion_info.amount_of_hertz == 60:
                 hertz_amount_text = ""
             else:

@@ -10,10 +10,14 @@ class Completion:
 
 
 @dataclass
-class DemonInfo:
+class CompactDemonInfo:
     name: str
     is_old: bool
     authors: str
     there_is_more_authors: bool
+
+
+@dataclass
+class DemonInfo(CompactDemonInfo):
     points: float
     completed_by: List[Completion]
