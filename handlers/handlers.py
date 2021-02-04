@@ -24,7 +24,7 @@ class Handlers:
     # because maybe in future I will use it as a normal method, so this prevents
     # it from being called directly from the class
     async def get_help_message_for_specific_commands(
-            self, command_descriptions: Dict[str, List[Callable[..., str]]],
+            self, command_descriptions: Dict[str, List[Callable[[], str]]],
             command_names: Tuple[str, ...]) -> HandlingResult:
         command_descriptions_as_strings = []
         quoted_not_found_commands: List[str] = []
