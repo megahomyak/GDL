@@ -77,9 +77,7 @@ class Handlers:
     async def get_mobile_demonlist(self) -> HandlingResult:
         site = await self.requests_worker.get_mobile_demons_site()
         return HandlingResult("\n".join(
-            f"{demon_index}. \"{demon.name}\""
-            f"{' (старый)' if demon.is_old else ''} от {demon.authors}"
-            f"{' и других' if demon.there_is_more_authors else ''}"
+            f"{demon_index}. {demon.get_as_readable_string()}"
             for demon_index, demon in enumerate(
                 handler_helpers.get_mobile_demons_info_from_soup(
                     site, get_compact_demon_info=True
@@ -94,23 +92,4 @@ class Handlers:
         demon = handler_helpers.get_mobile_demon_info_from_soup_by_num(
             soup, demon_num
         )
-        who_completed_this_demon = []
-        # noinspection PyUnboundLocalVariable
-        # because demon_num will be at least 1 (see condition above)
-        for completion_info in demon.completed_by:
-            if completion_info.amount_of_hertz == 60:
-                hertz_amount_text = ""
-            else:
-                hertz_amount_text = f" ({completion_info.amount_of_hertz} герц)"
-            who_completed_this_demon.append(
-                f"{completion_info.nickname}{hertz_amount_text} "
-                f"({completion_info.video_link})"
-            )
-        return HandlingResult(
-            f"{demon_num}. \"{last_parsed_demon.name}\""
-            f"{' (старый)' if last_parsed_demon.is_old else ''} от "
-            f"{last_parsed_demon.authors}"
-            f"{' и других' if last_parsed_demon.there_is_more_authors else ''}"
-            f" (~{last_parsed_demon.points} очков). А вот, кто этот уровень "
-            f"прошел: {', '.join(who_completed_this_demon)}."
-        )
+        return HandlingResult(f"{demon_num}. {demon.get_as_readable_string()}")
