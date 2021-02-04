@@ -48,3 +48,12 @@ class MobileDemonInfo(CompactMobileDemonInfo):
             f" (~{self.points} очков). А вот, кто этот уровень "
             f"прошел: {', '.join(who_completed_this_demon)}."
         )
+
+
+@dataclass
+class CompactDemonInfo:
+    name: str
+    publisher: str
+
+    def get_as_readable_string(self) -> str:
+        return f"{self.name} от {self.publisher}"

@@ -94,3 +94,13 @@ class Handlers:
             soup, demon_num
         )
         return HandlingResult(f"{demon_num}. {demon.get_as_readable_string()}")
+
+    async def get_pc_demonlist(self) -> HandlingResult:
+        return HandlingResult("\n".join(
+            f"{demon_index}. {compact_demon_info.get_as_readable_string()}"
+            for demon_index, compact_demon_info in enumerate(
+                handler_helpers.get_compact_pc_demonlist_from_json(
+                    await self.requests_worker.get_pc_demonlist_as_json()
+                ), start=1
+            )
+        ))

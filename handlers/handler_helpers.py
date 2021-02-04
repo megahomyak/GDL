@@ -96,3 +96,14 @@ def get_mobile_demon_info_from_soup_by_num(
     return get_mobile_demon_info_from_tag(
         get_mobile_demons_from_soup(soup)[num - 1]
     )
+
+
+def get_compact_pc_demonlist_from_json(
+        json_: List[dict]
+        ) -> Generator[dataclasses_.CompactDemonInfo, None, None]:
+    return (
+        dataclasses_.CompactDemonInfo(
+            name=demon_info["name"], publisher=demon_info["publisher"]["name"]
+        )
+        for demon_info in json_
+    )

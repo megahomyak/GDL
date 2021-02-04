@@ -112,6 +112,16 @@ class MainLogic:
                         )
                     )
                 )
+            ),
+            CommandsSection(
+                "ПК-демонлист",
+                (
+                    Command(
+                        names=("полный демонлист", "full demonlist"),
+                        handler=handlers.get_pc_demonlist,
+                        description="показывает список демонов из ПК-демонлиста"
+                    ),
+                )
             )
         )
         command_descriptions: Dict[str, List[Callable[[], str]]] = {}

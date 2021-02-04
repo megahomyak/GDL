@@ -1,5 +1,9 @@
+from typing import List
+
 import aiohttp
 import bs4
+
+POINTERCRATE_DEMONS_LINK = "https://pointercrate.com/api/v1/demons/"
 
 
 class RequestsWorker:
@@ -16,6 +20,17 @@ class RequestsWorker:
                 )
             ).text(), "html.parser"
         )
+
+    async def get_pc_demonlist_as_json(self) -> List[dict]:
+        first_part = await self.aiohttp_session.get(
+            POINTERCRATE_DEMONS_LINK,
+            params={"limit": 100}  # Getting first 100 demons (server limit)
+        )
+        second_part = await self.aiohttp_session.get(
+            POINTERCRATE_DEMONS_LINK,
+            params={"after": 100}  # Getting remaining 50 demons
+        )
+        return await first_part.json() + await second_part.json()
 
 
 if __name__ == '__main__':
