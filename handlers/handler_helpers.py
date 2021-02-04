@@ -10,7 +10,9 @@ from vk.dataclasses_ import Message
 # because it uses machine-generated tag class names
 CLASS_WITH_ONE_DEMON_NAME = "vhaaFf qUO6Ue"
 
-AnyDemonInfo = Union[dataclasses_.DemonInfo, dataclasses_.CompactDemonInfo]
+AnyDemonInfo = Union[
+    dataclasses_.MobileDemonInfo, dataclasses_.CompactMobileDemonInfo
+]
 
 
 @dataclass
@@ -43,7 +45,7 @@ def get_mobile_demon_info_from_tag(
         there_is_more_authors = False
     authors_string = authors_string.replace("&", "и")
     if get_compact_demon_info:
-        return dataclasses_.CompactDemonInfo(
+        return dataclasses_.CompactMobileDemonInfo(
             name=demon_name, is_old=is_old, authors=authors_string,
             there_is_more_authors=there_is_more_authors
         )
@@ -66,7 +68,7 @@ def get_mobile_demon_info_from_tag(
             else:  # Part we're parsing now is a nickname
                 last_nickname = string[:-2]  # Removing " -"
     points_amount = float(points[2:-8])  # Removing "(~" and " points)"
-    return dataclasses_.DemonInfo(
+    return dataclasses_.MobileDemonInfo(
         name=demon_name, is_old=is_old, authors=authors_string,
         there_is_more_authors=there_is_more_authors,
         points=points_amount, completed_by=pure_completions
@@ -90,7 +92,7 @@ def get_mobile_demons_info_from_soup(
 
 
 def get_mobile_demon_info_from_soup_by_num(
-        soup: bs4.BeautifulSoup, num: int) -> dataclasses_.DemonInfo:
+        soup: bs4.BeautifulSoup, num: int) -> dataclasses_.MobileDemonInfo:
     return get_mobile_demon_info_from_tag(
         get_mobile_demons_from_soup(soup)[num - 1]
     )

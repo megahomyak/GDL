@@ -10,7 +10,7 @@ class Completion:
 
 
 @dataclass
-class CompactDemonInfo:
+class CompactMobileDemonInfo:
     name: str
     is_old: bool
     authors: str
@@ -25,7 +25,7 @@ class CompactDemonInfo:
 
 
 @dataclass
-class DemonInfo(CompactDemonInfo):
+class MobileDemonInfo(CompactMobileDemonInfo):
     points: float
     completed_by: List[Completion]
 
