@@ -31,12 +31,12 @@ class Handlers:
         for command_name in command_names:
             try:
                 command_descriptions_as_strings.extend(
-                    # Here desc_func is a
+                    # Here description_method is a
                     # Command.get_short_full_description, if I set
                     # Command.get_short_full_description as a type -
                     # I wouldn't get any IDE hints anyway
-                    desc_func()
-                    for desc_func in command_descriptions[command_name]
+                    description_method()
+                    for description_method in command_descriptions[command_name]
                 )
             except KeyError:
                 quoted_not_found_commands.append(f"\"{command_name}\"")
