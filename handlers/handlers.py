@@ -1,11 +1,12 @@
 from typing import Dict, List, Callable, Tuple
 
-from handlers import constants
 from handlers import handler_helpers
 from handlers.handler_helpers import HandlingResult
 from main_logic_helpers import CommandsSection
 from requests_workers.requests_worker import RequestsWorker
 from vk import vk_config
+
+MOBILE_DEMONS_AMOUNT = 100
 
 
 class Handlers:
@@ -86,7 +87,7 @@ class Handlers:
         ))
 
     async def get_mobile_demon_info(self, demon_num: int) -> HandlingResult:
-        if demon_num > constants.MOBILE_DEMONS_AMOUNT or 1 > demon_num:
+        if demon_num > MOBILE_DEMONS_AMOUNT or 1 > demon_num:
             return HandlingResult("Неправильный номер демона!")
         soup = await self.requests_worker.get_mobile_demons_site()
         demon = handler_helpers.get_mobile_demon_info_from_soup_by_num(
