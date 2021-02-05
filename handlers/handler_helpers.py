@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Generator, Union, List, Optional
+from typing import Generator, Union, List, Optional, Dict, Any
 
 import bs4
 
@@ -13,6 +13,9 @@ CLASS_WITH_ONE_DEMON_NAME = "vhaaFf qUO6Ue"
 AnyMobileDemonInfo = Union[
     dataclasses_.MobileDemonInfo, dataclasses_.CompactMobileDemonInfo
 ]
+
+DEMON_AUTHORS_OUTPUT_LIMIT = 10
+DEMON_RECORDS_OUTPUT_LIMIT = 5
 
 
 @dataclass
@@ -108,4 +111,36 @@ def get_compact_pc_demonlist_from_json(
             name=demon_info["name"], publisher=demon_info["publisher"]["name"]
         )
         for demon_info in json_
+    )
+
+
+def get_pc_demon_from_json(json_: Dict[str, Any]) -> dataclasses_.PCDemonInfo:
+    """
+    json_ should be unpacked from "data" (response["data"])
+    """
+    first_ten_authors_names = [
+        creator_info["name"]
+        for creator_info in json_["creators"][:DEMON_AUTHORS_OUTPUT_LIMIT]
+    ]
+    first_five_records = [
+        dataclasses_.DemonRecord(
+            player_name=record_info["player"]["name"],
+            percents=record_info["progress"],
+            is_approved=record_info["status"] == "approved",
+            video_link=record_info["video"]
+        )
+        for record_info in json_["records"][:DEMON_RECORDS_OUTPUT_LIMIT]
+    ]
+    return dataclasses_.PCDemonInfo(
+        name=json_["name"], publisher=json_["publisher"]["name"],
+        verifier=json_["verifier"]["name"],
+        first_ten_authors_names=first_ten_authors_names,
+        there_is_more_authors=(
+            len(json_["creators"]) > DEMON_AUTHORS_OUTPUT_LIMIT
+        ),
+        first_five_records=first_five_records,
+        there_is_more_records=(
+            len(json_["records"]) > DEMON_RECORDS_OUTPUT_LIMIT
+        ),
+        video_link=json_["video"]
     )

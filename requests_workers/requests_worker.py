@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Any
 
 import aiohttp
 import bs4
@@ -40,6 +40,11 @@ class RequestsWorker:
             )
             return await first_part.json() + await second_part.json()
         return await first_part.json()
+
+    async def get_pc_demon_as_json(self, demon_num: int) -> Dict[str, Any]:
+        return (await (await self.aiohttp_session.get(
+            f"{POINTERCRATE_DEMONS_LINK}/{demon_num}"
+        )).json())["data"]
 
 
 if __name__ == '__main__':

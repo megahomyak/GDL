@@ -132,3 +132,15 @@ class Handlers:
                 )
             )
         )
+
+    async def get_pc_demon_info(self, demon_num: int) -> HandlingResult:
+        if demon_num > POINTERCRATE_DEMONS_AMOUNT:
+            return HandlingResult(
+                f"Слишком большой номер демона! (больше "
+                f"{POINTERCRATE_DEMONS_AMOUNT})"
+            )
+        return HandlingResult(
+            handler_helpers.get_pc_demon_from_json(
+                await self.requests_worker.get_pc_demon_as_json(demon_num)
+            ).get_as_readable_string()
+        )

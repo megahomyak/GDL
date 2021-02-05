@@ -149,6 +149,21 @@ class MainLogic:
                             ),
                         )
                     ),
+                    Command(
+                        names=("демон", "demon"),
+                        handler=handlers.get_pc_demon_info,
+                        description=(
+                            "показывает информацию о демоне из ПК-демонлиста "
+                            "по номеру"
+                        ),
+                        arguments=(
+                            Arg(
+                                "номер демона", IntArgType(
+                                    lexer.enums.IntTypes.GREATER_THAN_ZERO
+                                )
+                            ),
+                        )
+                    )
                 )
             )
         )
