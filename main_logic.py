@@ -117,9 +117,24 @@ class MainLogic:
                 "ПК-демонлист",
                 (
                     Command(
-                        names=("полный демонлист", "full demonlist"),
+                        names=("демонлист", "demonlist"),
                         handler=handlers.get_pc_demonlist,
                         description="показывает список демонов из ПК-демонлиста"
+                    ),
+                    Command(
+                        names=("демонлист", "demonlist"),
+                        handler=handlers.get_pc_demonlist,
+                        description=(
+                            "показывает список демонов из ПК-демонлиста, "
+                            "ограниченный до указанной позиции"
+                        ),
+                        arguments=(
+                            Arg(
+                                "количество демонов", IntArgType(
+                                    lexer.enums.IntTypes.GREATER_THAN_ZERO
+                                )
+                            ),
+                        )
                     ),
                 )
             )

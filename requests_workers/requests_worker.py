@@ -4,6 +4,7 @@ import aiohttp
 import bs4
 
 POINTERCRATE_DEMONS_LINK = "https://pointercrate.com/api/v1/demons/"
+POINTERCRATE_DEMONS_LIMIT = 100
 
 
 class RequestsWorker:
@@ -21,16 +22,24 @@ class RequestsWorker:
             ).text(), "html.parser"
         )
 
-    async def get_pc_demonlist_as_json(self) -> List[dict]:
+    async def get_pc_demonlist_as_json(
+            self, demons_amount: int) -> List[dict]:
         first_part = await self.aiohttp_session.get(
             POINTERCRATE_DEMONS_LINK,
-            params={"limit": 100}  # Getting first 100 demons (server limit)
+            params={"limit": min(demons_amount, POINTERCRATE_DEMONS_LIMIT)}
+            # Pointercrate isn't allowing to go above the limit
         )
-        second_part = await self.aiohttp_session.get(
-            POINTERCRATE_DEMONS_LINK,
-            params={"after": 100}  # Getting remaining 50 demons
-        )
-        return await first_part.json() + await second_part.json()
+        if demons_amount > POINTERCRATE_DEMONS_LIMIT:
+            second_part = await self.aiohttp_session.get(
+                POINTERCRATE_DEMONS_LINK,
+                params={
+                    "after": POINTERCRATE_DEMONS_LIMIT,
+                    "limit": demons_amount - POINTERCRATE_DEMONS_LIMIT
+                }
+                # Getting remaining demons
+            )
+            return await first_part.json() + await second_part.json()
+        return await first_part.json()
 
 
 if __name__ == '__main__':

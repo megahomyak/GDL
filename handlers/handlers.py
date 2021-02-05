@@ -7,6 +7,7 @@ from requests_workers.requests_worker import RequestsWorker
 from vk import vk_config
 
 MOBILE_DEMONS_AMOUNT = 100
+POINTERCRATE_DEMONS_AMOUNT = 150
 
 
 class Handlers:
@@ -95,12 +96,26 @@ class Handlers:
         )
         return HandlingResult(f"{demon_num}. {demon.get_as_readable_string()}")
 
-    async def get_pc_demonlist(self) -> HandlingResult:
-        return HandlingResult("\n".join(
-            f"{demon_index}. {compact_demon_info.get_as_readable_string()}"
-            for demon_index, compact_demon_info in enumerate(
-                handler_helpers.get_compact_pc_demonlist_from_json(
-                    await self.requests_worker.get_pc_demonlist_as_json()
-                ), start=1
+    async def get_pc_demonlist(
+            self, demons_amount: int = POINTERCRATE_DEMONS_AMOUNT
+            ) -> HandlingResult:
+        if demons_amount > POINTERCRATE_DEMONS_AMOUNT:
+            beginning = (
+                f"Вы запросили {demons_amount} демонов, но там их "
+                f"{POINTERCRATE_DEMONS_AMOUNT}, так что показываю все.\n"
             )
-        ))
+            demons_amount = 150
+        else:
+            beginning = ""
+        return HandlingResult(
+            beginning + "\n".join(
+                f"{demon_index}. {compact_demon_info.get_as_readable_string()}"
+                for demon_index, compact_demon_info in enumerate(
+                    handler_helpers.get_compact_pc_demonlist_from_json(
+                        await self.requests_worker.get_pc_demonlist_as_json(
+                            demons_amount
+                        )
+                    ), start=1
+                )
+            )
+        )
