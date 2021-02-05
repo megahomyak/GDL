@@ -10,7 +10,7 @@ from vk.dataclasses_ import Message
 # because it uses machine-generated tag class names
 CLASS_WITH_ONE_DEMON_NAME = "vhaaFf qUO6Ue"
 
-AnyDemonInfo = Union[
+AnyMobileDemonInfo = Union[
     dataclasses_.MobileDemonInfo, dataclasses_.CompactMobileDemonInfo
 ]
 
@@ -25,7 +25,8 @@ class HandlingResult:
 
 
 def get_mobile_demon_info_from_tag(
-        tag: bs4.Tag, get_compact_demon_info: bool = False) -> AnyDemonInfo:
+        tag: bs4.Tag,
+        get_compact_demon_info: bool = False) -> AnyMobileDemonInfo:
     f"""
     Class with one demon is "{CLASS_WITH_ONE_DEMON_NAME}"
     """
@@ -83,7 +84,7 @@ def get_mobile_demons_from_soup(
 def get_mobile_demons_info_from_soup(
         soup: bs4.BeautifulSoup, limit: Optional[int] = None,
         get_compact_demon_info: bool = False
-        ) -> Generator[AnyDemonInfo, None, None]:
+        ) -> Generator[AnyMobileDemonInfo, None, None]:
     return (
         get_mobile_demon_info_from_tag(
             raw_demon_info, get_compact_demon_info=get_compact_demon_info
