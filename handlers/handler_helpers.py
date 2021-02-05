@@ -102,9 +102,9 @@ def get_mobile_demon_info_from_soup_by_num(
 
 def get_compact_pc_demonlist_from_json(
         json_: List[dict]
-        ) -> Generator[dataclasses_.CompactDemonInfo, None, None]:
+        ) -> Generator[dataclasses_.CompactPCDemonInfo, None, None]:
     return (
-        dataclasses_.CompactDemonInfo(
+        dataclasses_.CompactPCDemonInfo(
             name=demon_info["name"], publisher=demon_info["publisher"]["name"]
         )
         for demon_info in json_

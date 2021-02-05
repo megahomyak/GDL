@@ -51,7 +51,7 @@ class MobileDemonInfo(CompactMobileDemonInfo):
 
 
 @dataclass
-class CompactDemonInfo:
+class CompactPCDemonInfo:
     name: str
     publisher: str
 
