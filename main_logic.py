@@ -118,10 +118,7 @@ class MainLogic:
                         ),
                         arguments=(
                             Arg(
-                                (
-                                    "номер демона, по которому надо получить "
-                                    "подробную информацию"
-                                ), IntArgType(
+                                "номер демона", IntArgType(
                                     lexer.enums.IntTypes.GREATER_THAN_ZERO
                                 )
                             ),
