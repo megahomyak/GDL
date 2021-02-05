@@ -107,7 +107,9 @@ class MainLogic:
                                 (
                                     "номер демона, по которому надо получить "
                                     "подробную информацию"
-                                ), IntArgType()
+                                ), IntArgType(
+                                    lexer.enums.IntTypes.GREATER_THAN_ZERO
+                                )
                             ),
                         )
                     )

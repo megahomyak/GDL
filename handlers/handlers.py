@@ -88,8 +88,10 @@ class Handlers:
         ))
 
     async def get_mobile_demon_info(self, demon_num: int) -> HandlingResult:
-        if demon_num > MOBILE_DEMONS_AMOUNT or 1 > demon_num:
-            return HandlingResult("Неправильный номер демона!")
+        if demon_num > MOBILE_DEMONS_AMOUNT:
+            return HandlingResult(
+                f"Слишком большой номер демона! (больше {MOBILE_DEMONS_AMOUNT})"
+            )
         soup = await self.requests_worker.get_mobile_demons_site()
         demon = handler_helpers.get_mobile_demon_info_from_soup_by_num(
             soup, demon_num
