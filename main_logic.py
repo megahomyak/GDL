@@ -96,6 +96,20 @@ class MainLogic:
                         )
                     ),
                     Command(
+                        names=("мдемонлист", "mdemonlist"),
+                        handler=handlers.get_mobile_demonlist,
+                        description=(
+                            "показывает список демонов из мобильного демонлиста"
+                        ),
+                        arguments=(
+                            Arg(
+                                "количество демонов", IntArgType(
+                                    lexer.enums.IntTypes.GREATER_THAN_ZERO
+                                )
+                            ),
+                        )
+                    ),
+                    Command(
                         names=("мдемон", "mdemon"),
                         handler=handlers.get_mobile_demon_info,
                         description=(

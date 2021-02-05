@@ -76,16 +76,27 @@ class Handlers:
     async def get_memo(self) -> HandlingResult:
         return HandlingResult(vk_config.MEMO)
 
-    async def get_mobile_demonlist(self) -> HandlingResult:
-        site = await self.requests_worker.get_mobile_demons_site()
-        return HandlingResult("\n".join(
-            f"{demon_index}. {demon.get_as_readable_string()}"
-            for demon_index, demon in enumerate(
-                handler_helpers.get_mobile_demons_info_from_soup(
-                    site, get_compact_demon_info=True
-                ), start=1
+    async def get_mobile_demonlist(
+            self, demons_amount: int = MOBILE_DEMONS_AMOUNT) -> HandlingResult:
+        if demons_amount > MOBILE_DEMONS_AMOUNT:
+            beginning = (
+                f"Вы запросили {demons_amount} демонов, но там их "
+                f"{MOBILE_DEMONS_AMOUNT}, так что показываю все.\n"
             )
-        ))
+            demons_amount = 150
+        else:
+            beginning = ""
+        site = await self.requests_worker.get_mobile_demons_site()
+        return HandlingResult(
+            beginning + "\n".join(
+                f"{demon_index}. {demon.get_as_readable_string()}"
+                for demon_index, demon in enumerate(
+                    handler_helpers.get_mobile_demons_info_from_soup(
+                        site, get_compact_demon_info=True, limit=demons_amount
+                    ), start=1
+                )
+            )
+        )
 
     async def get_mobile_demon_info(self, demon_num: int) -> HandlingResult:
         if demon_num > MOBILE_DEMONS_AMOUNT:

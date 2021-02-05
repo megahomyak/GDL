@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Generator, Union, List
+from typing import Generator, Union, List, Optional
 
 import bs4
 
@@ -76,25 +76,26 @@ def get_mobile_demon_info_from_tag(
 
 
 def get_mobile_demons_from_soup(
-        soup: bs4.BeautifulSoup) -> List[bs4.Tag]:
-    return soup.find_all(class_=CLASS_WITH_ONE_DEMON_NAME)
+        soup: bs4.BeautifulSoup, limit: Optional[int] = None) -> List[bs4.Tag]:
+    return soup.find_all(class_=CLASS_WITH_ONE_DEMON_NAME, limit=limit)
 
 
 def get_mobile_demons_info_from_soup(
-        soup: bs4.BeautifulSoup, get_compact_demon_info: bool = False
+        soup: bs4.BeautifulSoup, limit: Optional[int] = None,
+        get_compact_demon_info: bool = False
         ) -> Generator[AnyDemonInfo, None, None]:
     return (
         get_mobile_demon_info_from_tag(
             raw_demon_info, get_compact_demon_info=get_compact_demon_info
         )
-        for raw_demon_info in get_mobile_demons_from_soup(soup)
+        for raw_demon_info in get_mobile_demons_from_soup(soup, limit=limit)
     )
 
 
 def get_mobile_demon_info_from_soup_by_num(
         soup: bs4.BeautifulSoup, num: int) -> dataclasses_.MobileDemonInfo:
     return get_mobile_demon_info_from_tag(
-        get_mobile_demons_from_soup(soup)[num - 1]
+        get_mobile_demons_from_soup(soup, limit=num)[num - 1]
     )
 
 
