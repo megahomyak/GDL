@@ -1,5 +1,6 @@
-from typing import Dict, List, Callable, Tuple
+from typing import List, Tuple
 
+import my_typing
 from handlers import handler_helpers
 from handlers.handler_helpers import HandlingResult
 from main_logic_helpers import CommandsSection
@@ -25,7 +26,7 @@ class Handlers:
     # because maybe in future I will use it as a normal method, so this prevents
     # it from being called directly from the class
     async def get_help_message_for_specific_commands(
-            self, command_descriptions: Dict[str, List[Callable[[], str]]],
+            self, command_descriptions: my_typing.CommandDescriptionsDict,
             command_names: Tuple[str, ...]) -> HandlingResult:
         command_descriptions_as_strings = []
         quoted_not_found_commands: List[str] = []

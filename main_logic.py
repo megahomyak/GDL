@@ -4,12 +4,13 @@ import itertools
 import logging
 import sys
 import traceback
-from typing import NoReturn, Optional, List, Tuple, Dict, Callable
+from typing import NoReturn, Optional, Tuple
 
 import aiohttp
 import simple_avk
 
 import lexer
+import my_typing
 from handlers.handler_helpers import HandlingResult
 from handlers.handlers import Handlers
 from lexer.arg_implementations import SequenceArgType, StringArgType, IntArgType
@@ -167,7 +168,7 @@ class MainLogic:
                 )
             )
         )
-        command_descriptions: Dict[str, List[Callable[[], str]]] = {}
+        command_descriptions: my_typing.CommandDescriptionsDict = {}
         for section in self.command_sections:
             for command in section.commands:
                 for name in command.names:

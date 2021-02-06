@@ -2,9 +2,10 @@ import datetime
 import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Optional, Any, Tuple, Callable, Dict, List, Awaitable, Type
+from typing import Optional, Any, Tuple, Callable, Awaitable, Type
 
 import lexer.exceptions
+import my_typing
 from handlers.handler_helpers import HandlingResult
 from lexer.enums import GrammaticalCases
 from main_logic_helpers import CommandsSection
@@ -131,7 +132,7 @@ class ConstantContext:
     """
 
     commands: Tuple["CommandsSection", ...]
-    command_descriptions: Dict[str, List[Callable[[], str]]]
+    command_descriptions: my_typing.CommandDescriptionsDict
 
 
 class BaseMetadataElement(ABC):

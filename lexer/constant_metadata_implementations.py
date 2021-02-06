@@ -1,5 +1,6 @@
-from typing import Tuple, List, Dict, Callable
+from typing import Tuple
 
+import my_typing
 from lexer.lexer_classes import (
     BaseConstantMetadataElement, ConstantContext
 )
@@ -18,5 +19,5 @@ class CommandDescriptionsConstantMetadataElement(BaseConstantMetadataElement):
 
     @staticmethod
     def get_data_from_constant_context(
-            context: ConstantContext) -> Dict[str, List[Callable]]:
+            context: ConstantContext) -> my_typing.CommandDescriptionsDict:
         return context.command_descriptions
