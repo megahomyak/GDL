@@ -7,10 +7,12 @@ import traceback
 from typing import NoReturn, Optional, Tuple
 
 import aiohttp
+import gd
 import simple_avk
 
 import lexer
 import my_typing
+from gd_worker import GDWorker
 from handlers.handler_helpers import HandlingResult
 from handlers.handlers import Handlers
 from lexer.arg_implementations import SequenceArgType, StringArgType, IntArgType
@@ -166,6 +168,21 @@ class MainLogic:
                         )
                     )
                 )
+            ),
+            CommandsSection(
+                "С серверов GD",
+                (
+                    Command(
+                        names=("игрок", "player"),
+                        handler=handlers.get_player_info,
+                        description="показывает информацию об игроке по нику",
+                        arguments=(
+                            Arg(
+                                "ник игрока", StringArgType()
+                            ),
+                        )
+                    ),
+                )
             )
         )
         command_descriptions: my_typing.CommandDescriptionsDict = {}
@@ -295,7 +312,7 @@ async def main(debug: bool = False):
         )
         main_logic = MainLogic(
             vk_worker,
-            Handlers(RequestsWorker(aiohttp_session)),
+            Handlers(RequestsWorker(aiohttp_session), GDWorker(gd.Client())),
             logging.getLogger("command_handling_errors")
         )
         if debug:

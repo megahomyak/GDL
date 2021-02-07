@@ -1,5 +1,8 @@
 from typing import List, Tuple
 
+import gd
+
+import gd_worker
 import my_typing
 from handlers import handler_helpers
 from handlers.handler_helpers import HandlingResult
@@ -13,8 +16,11 @@ POINTERCRATE_DEMONS_AMOUNT = 150
 
 class Handlers:
 
-    def __init__(self, requests_worker: RequestsWorker):
+    def __init__(
+            self, requests_worker: RequestsWorker,
+            gd_worker_: gd_worker.GDWorker):
         self.requests_worker = requests_worker
+        self.gd_worker = gd_worker_
 
     # noinspection PyMethodMayBeStatic
     # because maybe in future I will use it as a normal method, so this prevents
@@ -145,3 +151,13 @@ class Handlers:
                 await self.requests_worker.get_pc_demon_as_json(demon_num)
             ).get_as_readable_string()
         )
+
+    async def get_player_info(self, player_name: str) -> HandlingResult:
+        try:
+            return HandlingResult(await gd_worker.get_user_as_readable_string(
+                await self.gd_worker.get_player(player_name)
+            ))
+        except gd.MissingAccess:
+            return HandlingResult(
+                f"Пользователь с ником {player_name} не найден!"
+            )
