@@ -174,3 +174,13 @@ class Handlers:
             return HandlingResult(
                 await gd_views.get_level_as_readable_string(level)
             )
+
+    async def get_level_info_by_id(self, level_id: int) -> HandlingResult:
+        try:
+            level = await self.gd_worker.get_level_by_id(level_id)
+        except gd.MissingAccess:
+            return HandlingResult(f"Уровня с айди {level_id} не существует!")
+        else:
+            return HandlingResult(
+                await gd_views.get_level_as_readable_string(level)
+            )

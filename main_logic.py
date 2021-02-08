@@ -184,6 +184,20 @@ class MainLogic:
                     ),
                     Command(
                         names=("уровень", "level"),
+                        handler=handlers.get_level_info_by_id,
+                        description=(
+                            "показывает информацию об уровне по его айди"
+                        ),
+                        arguments=(
+                            Arg(
+                                "айди уровня", IntArgType(
+                                    lexer.enums.IntTypes.GREATER_THAN_ZERO
+                                )
+                            ),
+                        )
+                    ),
+                    Command(
+                        names=("уровень", "level"),
                         handler=handlers.get_level_info_by_name,
                         description=(
                             "показывает информацию об уровне по его названию"
