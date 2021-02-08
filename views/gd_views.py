@@ -28,7 +28,8 @@ async def get_user_as_readable_string(user: gd.User) -> str:
             f"\n- Последние 3 уровня игрока: {', '.join(level_names_in_quotes)}"
         )
     return (
-        f"• Игрок {user.name}{role}:\n\n"
+        f"• Игрок {user.name}{role}:\n"
+        f"\n"
         f"- Звезд на аккаунте: {user.stars}\n"
         f"- Алмазов на аккаунте: {user.diamonds}\n"
         f"- Монеток: {user.coins}\n"
