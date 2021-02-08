@@ -12,7 +12,6 @@ import simple_avk
 
 import lexer
 import my_typing
-from gd_worker import GDWorker
 from handlers.handler_helpers import HandlingResult
 from handlers.handlers import Handlers
 from lexer.arg_implementations import SequenceArgType, StringArgType, IntArgType
@@ -22,6 +21,7 @@ from lexer.constant_metadata_implementations import (
 from lexer.lexer_classes import Command
 from lexer.lexer_classes import ConstantContext, Context, Arg
 from main_logic_helpers import CommandsSection
+from requests_workers.gd_worker import GDWorker
 from requests_workers.requests_worker import RequestsWorker
 from vk import vk_config
 from vk.dataclasses_ import Message
