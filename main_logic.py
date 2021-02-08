@@ -106,7 +106,7 @@ class MainLogic:
                         ),
                         arguments=(
                             Arg(
-                                "количество демонов", IntArgType(
+                                "количество демонов (>0)", IntArgType(
                                     lexer.enums.IntTypes.GREATER_THAN_ZERO
                                 )
                             ),
@@ -121,7 +121,7 @@ class MainLogic:
                         ),
                         arguments=(
                             Arg(
-                                "номер демона", IntArgType(
+                                "номер демона (>0)", IntArgType(
                                     lexer.enums.IntTypes.GREATER_THAN_ZERO
                                 )
                             ),
@@ -146,7 +146,7 @@ class MainLogic:
                         ),
                         arguments=(
                             Arg(
-                                "количество демонов", IntArgType(
+                                "количество демонов (>0)", IntArgType(
                                     lexer.enums.IntTypes.GREATER_THAN_ZERO
                                 )
                             ),
@@ -161,7 +161,7 @@ class MainLogic:
                         ),
                         arguments=(
                             Arg(
-                                "номер демона", IntArgType(
+                                "номер демона (>0)", IntArgType(
                                     lexer.enums.IntTypes.GREATER_THAN_ZERO
                                 )
                             ),
@@ -190,7 +190,7 @@ class MainLogic:
                         ),
                         arguments=(
                             Arg(
-                                "айди уровня", IntArgType(
+                                "айди уровня (>0)", IntArgType(
                                     lexer.enums.IntTypes.GREATER_THAN_ZERO
                                 )
                             ),
