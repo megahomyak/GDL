@@ -161,3 +161,15 @@ class Handlers:
             return HandlingResult(
                 f"Пользователь с ником {player_name} не найден!"
             )
+
+    async def get_level_info_by_name(self, level_name: str) -> HandlingResult:
+        try:
+            level = await self.gd_worker.get_level_by_name(level_name)
+        except gd_worker.LevelNotFound:
+            return HandlingResult(
+                f"Уровня с названием {level_name} не найдено!"
+            )
+        else:
+            return HandlingResult(
+                await gd_worker.get_level_as_readable_string(level)
+            )

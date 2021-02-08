@@ -182,6 +182,18 @@ class MainLogic:
                             ),
                         )
                     ),
+                    Command(
+                        names=("уровень", "level"),
+                        handler=handlers.get_level_info_by_name,
+                        description=(
+                            "показывает информацию об уровне по его названию"
+                        ),
+                        arguments=(
+                            Arg(
+                                "название уровня", StringArgType()
+                            ),
+                        )
+                    )
                 )
             )
         )
