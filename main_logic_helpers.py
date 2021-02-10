@@ -13,8 +13,9 @@ class CommandsSection:
 
     def get_compact_command_descriptions(
             self, add_dot_before_name: bool = False) -> str:
-        descriptions = '\n'.join(f'{num+1}. {desc}' for num, desc in enumerate(
-            command.get_short_full_description() for command in self.commands
+        descriptions = '\n'.join(f'{num}. {desc}' for num, desc in enumerate(
+            (command.get_short_full_description() for command in self.commands),
+            start=1
         ))
         return (
             f"{'• ' if add_dot_before_name else ''}{self.name}:\n{descriptions}"
