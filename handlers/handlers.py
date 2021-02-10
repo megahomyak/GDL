@@ -4,7 +4,9 @@ import gd
 
 import my_typing
 from handlers import handler_helpers
-from handlers.handler_helpers import HandlingResult
+from handlers.handler_helpers import (
+    HandlingResult, HandlerHelpersWithDependencies
+)
 from main_logic_helpers import CommandsSection
 from requests_workers import gd_worker
 from requests_workers.requests_worker import RequestsWorker
@@ -19,9 +21,11 @@ class Handlers:
 
     def __init__(
             self, requests_worker: RequestsWorker,
-            gd_worker_: gd_worker.GDWorker):
+            gd_worker_: gd_worker.GDWorker,
+            handler_helpers_with_dependencies: HandlerHelpersWithDependencies):
         self.requests_worker = requests_worker
         self.gd_worker = gd_worker_
+        self.helpers_with_dependencies = handler_helpers_with_dependencies
 
     # noinspection PyMethodMayBeStatic
     # because maybe in future I will use it as a normal method, so this prevents
@@ -147,10 +151,10 @@ class Handlers:
                 f"Слишком большой номер демона! (больше "
                 f"{POINTERCRATE_DEMONS_AMOUNT})"
             )
-        return HandlingResult(
-            handler_helpers.get_pc_demon_from_json(
-                await self.requests_worker.get_pc_demon_as_json(demon_num)
-            ).get_as_readable_string()
+        return await (
+            self.helpers_with_dependencies.get_handling_result_about_pc_demon(
+                demon_num
+            )
         )
 
     async def get_player_info(self, player_name: str) -> HandlingResult:
@@ -184,3 +188,21 @@ class Handlers:
             return HandlingResult(
                 await gd_views.get_level_as_readable_string(level)
             )
+
+    async def get_pc_demon_info_by_demon_name(
+            self, demon_name: str) -> HandlingResult:
+        json_ = await self.requests_worker.get_pc_demonlist_as_json(
+            POINTERCRATE_DEMONS_AMOUNT
+        )
+        lower_demon_name = demon_name.lower()
+        for demon_info in json_:
+            if demon_info["name"].lower() == lower_demon_name:
+                return await (
+                    self.helpers_with_dependencies
+                    .get_handling_result_about_pc_demon(
+                        demon_info["position"]
+                    )
+                )
+        return HandlingResult(
+            f"Демон с названием {demon_name} не найден в ПК-демонлисте!"
+        )

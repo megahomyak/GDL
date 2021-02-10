@@ -4,6 +4,7 @@ from typing import Generator, Union, List, Optional, Dict, Any
 import bs4
 
 from requests_workers import dataclasses_
+from requests_workers.requests_worker import RequestsWorker
 from vk.dataclasses_ import Message
 
 # noinspection SpellCheckingInspection
@@ -144,3 +145,16 @@ def get_pc_demon_from_json(json_: Dict[str, Any]) -> dataclasses_.PCDemonInfo:
         ),
         video_link=json_["video"]
     )
+
+
+class HandlerHelpersWithDependencies:
+
+    def __init__(self, requests_worker: RequestsWorker):
+        self.requests_worker = requests_worker
+
+    async def get_handling_result_about_pc_demon(self, demon_num: int):
+        return HandlingResult(
+            get_pc_demon_from_json(
+                await self.requests_worker.get_pc_demon_as_json(demon_num)
+            ).get_as_readable_string()
+        )

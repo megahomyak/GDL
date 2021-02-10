@@ -12,7 +12,10 @@ import simple_avk
 
 import lexer
 import my_typing
-from handlers.handler_helpers import HandlingResult
+from handlers.handler_helpers import (
+    HandlingResult,
+    HandlerHelpersWithDependencies
+)
 from handlers.handlers import Handlers
 from lexer.arg_implementations import SequenceArgType, StringArgType, IntArgType
 from lexer.constant_metadata_implementations import (
@@ -164,6 +167,19 @@ class MainLogic:
                                 "номер демона (>0)", IntArgType(
                                     lexer.enums.IntTypes.GREATER_THAN_ZERO
                                 )
+                            ),
+                        )
+                    ),
+                    Command(
+                        names=("демон", "demon"),
+                        handler=handlers.get_pc_demon_info_by_demon_name,
+                        description=(
+                            "показывает информацию о демоне из ПК-демонлиста "
+                            "по названию"
+                        ),
+                        arguments=(
+                            Arg(
+                                "название демона", StringArgType()
                             ),
                         )
                     )
@@ -336,9 +352,14 @@ async def main(debug: bool = False):
             level=logging.INFO,
             format="[%(asctime)s | %(name)s | %(levelname)s] - %(message)s"
         )
+        requests_worker = RequestsWorker(aiohttp_session)
         main_logic = MainLogic(
             vk_worker,
-            Handlers(RequestsWorker(aiohttp_session), GDWorker(gd.Client())),
+            Handlers(
+                requests_worker,
+                GDWorker(gd.Client()),
+                HandlerHelpersWithDependencies(requests_worker)
+            ),
             logging.getLogger("command_handling_errors")
         )
         if debug:
