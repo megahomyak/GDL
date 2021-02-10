@@ -32,8 +32,6 @@ class MobileDemonInfo(CompactMobileDemonInfo):
 
     def get_as_readable_string(self) -> str:
         who_completed_this_demon = []
-        # noinspection PyUnboundLocalVariable
-        # because demon_num will be at least 1 (see condition above)
         for completion_info in self.completed_by:
             if completion_info.amount_of_hertz == 60:
                 hertz_amount_text = ""
