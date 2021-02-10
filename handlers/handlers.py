@@ -91,7 +91,7 @@ class Handlers:
                 f"Вы запросили {demons_amount} демонов, но там их "
                 f"{MOBILE_DEMONS_AMOUNT}, так что показываю все.\n"
             )
-            demons_amount = 150
+            demons_amount = MOBILE_DEMONS_AMOUNT
         else:
             beginning = ""
         site = await self.requests_worker.get_mobile_demons_site()
@@ -125,7 +125,7 @@ class Handlers:
                 f"Вы запросили {demons_amount} демонов, но там их "
                 f"{POINTERCRATE_DEMONS_AMOUNT}, так что показываю все.\n"
             )
-            demons_amount = 150
+            demons_amount = POINTERCRATE_DEMONS_AMOUNT
         else:
             beginning = ""
         return HandlingResult(
