@@ -2,6 +2,10 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 
+DEMON_AUTHORS_OUTPUT_LIMIT = 10
+DEMON_RECORDS_OUTPUT_LIMIT = 5
+
+
 @dataclass
 class Completion:
     nickname: str
@@ -28,6 +32,7 @@ class CompactMobileDemonInfo:
 @dataclass
 class MobileDemonInfo(CompactMobileDemonInfo):
     points: float
+    # Only first {DEMON_RECORDS_OUTPUT_LIMIT} completions!
     completed_by: List[Completion]
 
     def get_as_readable_string(self) -> str:
@@ -38,15 +43,17 @@ class MobileDemonInfo(CompactMobileDemonInfo):
             else:
                 hertz_amount_text = f" ({completion_info.amount_of_hertz} герц)"
             who_completed_this_demon.append(
-                f"{completion_info.nickname}{hertz_amount_text} "
+                f"- {completion_info.nickname}{hertz_amount_text} "
                 f"({completion_info.video_link})"
             )
+        who_completed_this_demon_str = ',\n'.join(who_completed_this_demon)
         return (
             f"{self.place_in_list}. \"{self.name}\""
             f"{' (старый)' if self.is_old else ''} от "
             f"{self.authors}{' и других' if self.there_is_more_authors else ''}"
-            f" (~{self.points} очков). А вот, кто этот уровень "
-            f"прошел: {', '.join(who_completed_this_demon)}."
+            f" (~{self.points} очков).\n\n• Кто прошел уровень (первые "
+            f"{DEMON_RECORDS_OUTPUT_LIMIT} прохождений):\n"
+            f"{who_completed_this_demon_str}"
         )
 
 
@@ -57,7 +64,7 @@ class CompactPCDemonInfo:
     publisher: str
 
     def get_as_readable_string(self) -> str:
-        return f"{self.place_in_list}. {self.name} от {self.publisher}"
+        return f"{self.place_in_list}. \"{self.name}\" от {self.publisher}"
 
 
 @dataclass
@@ -89,7 +96,7 @@ class PCDemonInfo(CompactPCDemonInfo):
             f"- {record.get_as_readable_string()}"
             for record in self.first_five_records
         ) if self.first_five_records else '<пусто>'
-        records_ending = '\n и другие' if self.there_is_more_records else ''
+        records_ending = '\nи другие' if self.there_is_more_records else ''
         video_part = (
             f": {self.video_link}"
         ) if self.video_link is not None else " отсутствует"
@@ -100,10 +107,11 @@ class PCDemonInfo(CompactPCDemonInfo):
             f"\n"
             f"• Видео{video_part}\n"
             f"\n"
-            f"• Авторы: {', '.join(self.first_ten_authors_names)}"
+            f"• Авторы (первые {DEMON_AUTHORS_OUTPUT_LIMIT}): "
+            f"{', '.join(self.first_ten_authors_names)}"
             f"{' и другие' if self.there_is_more_authors else ''}.\n"
             f"\n"
-            f"• Рекорды:\n"
+            f"• Рекорды (первые {DEMON_RECORDS_OUTPUT_LIMIT}):\n"
             f"{records_str}"
             f"{records_ending}."
         )

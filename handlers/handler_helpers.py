@@ -4,6 +4,9 @@ from typing import Generator, Union, List, Optional, Dict, Any
 import bs4
 
 from requests_workers import dataclasses_
+from requests_workers.dataclasses_ import (
+    DEMON_AUTHORS_OUTPUT_LIMIT, DEMON_RECORDS_OUTPUT_LIMIT
+)
 from requests_workers.requests_worker import RequestsWorker
 from vk.dataclasses_ import Message
 
@@ -14,9 +17,6 @@ CLASS_WITH_ONE_DEMON_NAME = "vhaaFf qUO6Ue"
 AnyMobileDemonInfo = Union[
     dataclasses_.MobileDemonInfo, dataclasses_.CompactMobileDemonInfo
 ]
-
-DEMON_AUTHORS_OUTPUT_LIMIT = 10
-DEMON_RECORDS_OUTPUT_LIMIT = 5
 
 
 @dataclass
@@ -57,6 +57,7 @@ def get_mobile_demon_info_from_tag(
         )
     pure_completions = []
     last_nickname = None
+    completions_parsed = 0
     # One completion info can look like
     # ["Nickname -", "https://you.rbutt/whTlVsmtR"]
     # or like
@@ -66,11 +67,14 @@ def get_mobile_demon_info_from_tag(
         if string.startswith("(") and string.endswith("hz)"):
             pure_completions[-1].amount_of_hertz = int(string[1:-3])
         else:
+            if completions_parsed == DEMON_RECORDS_OUTPUT_LIMIT:
+                break
             if last_nickname:  # Part we're parsing now is YT link
                 pure_completions.append(dataclasses_.Completion(
                     nickname=last_nickname, video_link=string
                 ))
                 last_nickname = None
+                completions_parsed += 1
             else:  # Part we're parsing now is a nickname
                 last_nickname = string[:-2]  # Removing " -"
     points_amount = float(points[2:-8])  # Removing "(~" and " points)"

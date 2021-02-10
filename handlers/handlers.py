@@ -118,7 +118,7 @@ class Handlers:
         demon = handler_helpers.get_mobile_demon_info_from_soup_by_num(
             soup, demon_num
         )
-        return HandlingResult(f"{demon_num}. {demon.get_as_readable_string()}")
+        return HandlingResult(demon.get_as_readable_string())
 
     async def get_pc_demonlist(
             self, demons_amount: int = POINTERCRATE_DEMONS_AMOUNT
@@ -230,12 +230,11 @@ class Handlers:
                     # '1. "Title" by author' -> 'Title'
                     == lower_demon_name
                 ):
-                    readable_demon_info = (
+                    return HandlingResult(
                         handler_helpers.get_mobile_demon_info_from_tag(
                             demon_info_tag, demon_num=demon_num
                         ).get_as_readable_string()
                     )
-                    return HandlingResult(f"{demon_num}. {readable_demon_info}")
                 else:
                     demon_info_tag = demon_info_tag.find_next(
                         class_=handler_helpers.CLASS_WITH_ONE_DEMON_NAME
