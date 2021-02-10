@@ -129,6 +129,19 @@ class MainLogic:
                                 )
                             ),
                         )
+                    ),
+                    Command(
+                        names=("мдемон", "mdemon"),
+                        handler=handlers.get_mobile_demon_info_by_demon_name,
+                        description=(
+                            "показывает информацию о демоне из мобильного "
+                            "демонлиста по названию"
+                        ),
+                        arguments=(
+                            Arg(
+                                "название демона", StringArgType()
+                            ),
+                        )
                     )
                 )
             ),

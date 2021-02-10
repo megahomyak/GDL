@@ -206,3 +206,39 @@ class Handlers:
         return HandlingResult(
             f"Демон с названием {demon_name} не найден в ПК-демонлисте!"
         )
+
+    async def get_mobile_demon_info_by_demon_name(
+            self, demon_name: str) -> HandlingResult:
+        site = await self.requests_worker.get_mobile_demons_site()
+        demon_info_tag = site.find(
+            class_=handler_helpers.CLASS_WITH_ONE_DEMON_NAME
+        )
+        lower_demon_name = demon_name.lower()
+        demon_num = 1
+        while True:
+            if demon_info_tag is None:
+                return HandlingResult(
+                    f"Демон с названием {demon_name} не найден в мобильном "
+                    f"демонлисте!"
+                )
+            else:
+                # Demon's name is the first stripped string
+                if (
+                    next(
+                        demon_info_tag.stripped_strings
+                    ).split("\"", maxsplit=2)[1].lower()
+                    # split("\"", maxsplit=2)[1] here does this:
+                    # '1. "Title" by author' -> 'Title'
+                    == lower_demon_name
+                ):
+                    readable_demon_info = (
+                        handler_helpers.get_mobile_demon_info_from_tag(
+                            demon_info_tag
+                        ).get_as_readable_string()
+                    )
+                    return HandlingResult(f"{demon_num}. {readable_demon_info}")
+                else:
+                    demon_info_tag = demon_info_tag.find_next(
+                        class_=handler_helpers.CLASS_WITH_ONE_DEMON_NAME
+                    )
+            demon_num += 1
