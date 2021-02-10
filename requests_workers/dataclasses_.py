@@ -11,6 +11,7 @@ class Completion:
 
 @dataclass
 class CompactMobileDemonInfo:
+    place_in_list: int
     name: str
     is_old: bool
     authors: str
@@ -18,7 +19,7 @@ class CompactMobileDemonInfo:
 
     def get_as_readable_string(self) -> str:
         return (
-            f"\"{self.name}\""
+            f"{self.place_in_list}. \"{self.name}\""
             f"{' (старый)' if self.is_old else ''} от {self.authors}"
             f"{' и других' if self.there_is_more_authors else ''}"
         )
@@ -43,7 +44,8 @@ class MobileDemonInfo(CompactMobileDemonInfo):
                 f"({completion_info.video_link})"
             )
         return (
-            f"\"{self.name}\"{' (старый)' if self.is_old else ''} от "
+            f"{self.place_in_list}. \"{self.name}\""
+            f"{' (старый)' if self.is_old else ''} от "
             f"{self.authors}{' и других' if self.there_is_more_authors else ''}"
             f" (~{self.points} очков). А вот, кто этот уровень "
             f"прошел: {', '.join(who_completed_this_demon)}."
@@ -52,11 +54,12 @@ class MobileDemonInfo(CompactMobileDemonInfo):
 
 @dataclass
 class CompactPCDemonInfo:
+    place_in_list: int
     name: str
     publisher: str
 
     def get_as_readable_string(self) -> str:
-        return f"{self.name} от {self.publisher}"
+        return f"{self.place_in_list}. {self.name} от {self.publisher}"
 
 
 @dataclass
@@ -75,6 +78,7 @@ class DemonRecord:
 
 @dataclass
 class PCDemonInfo(CompactPCDemonInfo):
+    place_in_list: int
     verifier: str
     first_ten_authors_names: List[str]
     there_is_more_authors: bool
@@ -94,6 +98,7 @@ class PCDemonInfo(CompactPCDemonInfo):
         return (
             f"{self.name}:\n"
             f"Опубликован {self.publisher}, верифнут {self.verifier}.\n"
+            f"Место в топе: {self.place_in_list}\n"
             f"\n"
             f"• Видео{video_part}\n"
             f"\n"

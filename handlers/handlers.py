@@ -101,11 +101,10 @@ class Handlers:
         site = await self.requests_worker.get_mobile_demons_site()
         return HandlingResult(
             beginning + "\n".join(
-                f"{demon_index}. {demon.get_as_readable_string()}"
-                for demon_index, demon in enumerate(
+                demon.get_as_readable_string() for demon in (
                     handler_helpers.get_mobile_demons_info_from_soup(
                         site, get_compact_demon_info=True, limit=demons_amount
-                    ), start=1
+                    )
                 )
             )
         )
@@ -134,13 +133,13 @@ class Handlers:
             beginning = ""
         return HandlingResult(
             beginning + "\n".join(
-                f"{demon_index}. {compact_demon_info.get_as_readable_string()}"
-                for demon_index, compact_demon_info in enumerate(
+                compact_demon_info.get_as_readable_string()
+                for compact_demon_info in (
                     handler_helpers.get_compact_pc_demonlist_from_json(
                         await self.requests_worker.get_pc_demonlist_as_json(
                             demons_amount
                         )
-                    ), start=1
+                    )
                 )
             )
         )
@@ -233,7 +232,7 @@ class Handlers:
                 ):
                     readable_demon_info = (
                         handler_helpers.get_mobile_demon_info_from_tag(
-                            demon_info_tag
+                            demon_info_tag, demon_num=demon_num
                         ).get_as_readable_string()
                     )
                     return HandlingResult(f"{demon_num}. {readable_demon_info}")

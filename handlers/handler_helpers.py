@@ -29,7 +29,7 @@ class HandlingResult:
 
 
 def get_mobile_demon_info_from_tag(
-        tag: bs4.Tag,
+        tag: bs4.Tag, demon_num: int,
         get_compact_demon_info: bool = False) -> AnyMobileDemonInfo:
     f"""
     Class with one demon is "{CLASS_WITH_ONE_DEMON_NAME}"
@@ -51,6 +51,7 @@ def get_mobile_demon_info_from_tag(
     authors_string = authors_string.replace("&", "и")
     if get_compact_demon_info:
         return dataclasses_.CompactMobileDemonInfo(
+            place_in_list=demon_num,
             name=demon_name, is_old=is_old, authors=authors_string,
             there_is_more_authors=there_is_more_authors
         )
@@ -74,6 +75,7 @@ def get_mobile_demon_info_from_tag(
                 last_nickname = string[:-2]  # Removing " -"
     points_amount = float(points[2:-8])  # Removing "(~" and " points)"
     return dataclasses_.MobileDemonInfo(
+        place_in_list=demon_num,
         name=demon_name, is_old=is_old, authors=authors_string,
         there_is_more_authors=there_is_more_authors,
         points=points_amount, completed_by=pure_completions
@@ -91,16 +93,19 @@ def get_mobile_demons_info_from_soup(
         ) -> Generator[AnyMobileDemonInfo, None, None]:
     return (
         get_mobile_demon_info_from_tag(
-            raw_demon_info, get_compact_demon_info=get_compact_demon_info
+            raw_demon_info, demon_num=demon_num,
+            get_compact_demon_info=get_compact_demon_info
         )
-        for raw_demon_info in get_mobile_demons_from_soup(soup, limit=limit)
+        for demon_num, raw_demon_info in enumerate(
+            get_mobile_demons_from_soup(soup, limit=limit), start=1
+        )
     )
 
 
 def get_mobile_demon_info_from_soup_by_num(
         soup: bs4.BeautifulSoup, num: int) -> dataclasses_.MobileDemonInfo:
     return get_mobile_demon_info_from_tag(
-        get_mobile_demons_from_soup(soup, limit=num)[num - 1]
+        get_mobile_demons_from_soup(soup, limit=num)[num - 1], demon_num=num
     )
 
 
@@ -109,6 +114,7 @@ def get_compact_pc_demonlist_from_json(
         ) -> Generator[dataclasses_.CompactPCDemonInfo, None, None]:
     return (
         dataclasses_.CompactPCDemonInfo(
+            place_in_list=demon_info["position"],
             name=demon_info["name"], publisher=demon_info["publisher"]["name"]
         )
         for demon_info in json_
@@ -133,6 +139,7 @@ def get_pc_demon_from_json(json_: Dict[str, Any]) -> dataclasses_.PCDemonInfo:
         for record_info in json_["records"][:DEMON_RECORDS_OUTPUT_LIMIT]
     ]
     return dataclasses_.PCDemonInfo(
+        place_in_list=json_["position"],
         name=json_["name"], publisher=json_["publisher"]["name"],
         verifier=json_["verifier"]["name"],
         first_ten_authors_names=first_ten_authors_names,
