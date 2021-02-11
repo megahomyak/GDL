@@ -239,3 +239,21 @@ class Handlers:
                         class_=handler_helpers.CLASS_WITH_ONE_DEMON_NAME
                     )
             demon_num += 1
+
+    async def get_levels_from_gd_search(
+            self, level_name: str, page_num: int) -> HandlingResult:
+        levels = await self.gd_worker.gd_client.search_levels(
+            level_name, pages=[page_num - 1]
+        )
+        if levels:
+            return HandlingResult(
+                "\n".join(
+                    f"- \"{level.name}\" от {level.creator}, айди - {level.id}"
+                    for level in levels
+                )
+            )
+        else:
+            return HandlingResult(
+                f"Уровней по запросу \"{level_name}\" на странице поиска "
+                f"{page_num} не найдено!"
+            )

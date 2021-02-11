@@ -231,6 +231,36 @@ class MainLogic:
                                 "название уровня", StringArgType()
                             ),
                         )
+                    ),
+                    Command(
+                        names=("поиск", "search"),
+                        handler=handlers.get_levels_from_gd_search,
+                        description=(
+                            "показывает страницу с уровнями из поиска GD"
+                        ),
+                        arguments=(
+                            Arg(
+                                "название уровня", StringArgType()
+                            ),
+                            Arg(
+                                "номер страницы", IntArgType(
+                                    lexer.enums.IntTypes.GREATER_THAN_ZERO
+                                )
+                            )
+                        )
+                    ),
+                    Command(
+                        names=("поиск", "search"),
+                        handler=handlers.get_levels_from_gd_search,
+                        description=(
+                            "показывает первую страницу с уровнями из поиска GD"
+                        ),
+                        arguments=(
+                            Arg(
+                                "название уровня", StringArgType()
+                            ),
+                        ),
+                        fillers=(1,)  # Page number
                     )
                 )
             )
