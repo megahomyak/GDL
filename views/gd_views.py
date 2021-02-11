@@ -78,7 +78,7 @@ async def get_level_as_readable_string(level: gd.Level) -> str:
         f"- Айди: {level.id}\n"
         f"- Автор: {level.creator.name}\n"
         f"- {description_str}\n"
-        f"- Музыка: {level.song.name}, айди - {level.song.id}\n"
+        f"- Музыка: \"{level.song.name}\", айди - {level.song.id}\n"
         f"- Скачиваний: {level.downloads}\n"
         f"- {likes_amount_str}"  # Likes or dislikes
         f"{most_liked_comments_str}"
