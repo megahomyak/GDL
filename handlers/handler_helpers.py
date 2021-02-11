@@ -35,6 +35,7 @@ def get_mobile_demon_info_from_tag(
     Class with one demon is "{CLASS_WITH_ONE_DEMON_NAME}"
     """
     title, points, *completion_strings = tag.stripped_strings
+    # '1. "Name" by author' -> ['1. ', 'Name', ' by author'] -> 'Name'
     divided_title = title.split("\"", maxsplit=2)
     demon_name = divided_title[1]
     if divided_title[2][1:6] == "(old)":
@@ -156,6 +157,17 @@ def get_pc_demon_from_json(json_: Dict[str, Any]) -> dataclasses_.PCDemonInfo:
         ),
         video_link=json_["video"]
     )
+
+
+def get_demon_name_from_stripped_strings(
+        stripped_strings: Generator[bs4.NavigableString, None, None]) -> str:
+    # split("\"", maxsplit=2)[1] here does this:
+    # '1. "Title" by author' -> 'Title'
+    return next(stripped_strings).split("\"", maxsplit=2)[1]
+
+
+def get_demon_name_from_demon_tag(tag: bs4.Tag) -> str:
+    return get_demon_name_from_stripped_strings(tag.stripped_strings)
 
 
 class HandlerHelpersWithDependencies:

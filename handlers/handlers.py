@@ -225,12 +225,9 @@ class Handlers:
             else:
                 # Demon's name is the first stripped string
                 if (
-                    next(
-                        demon_info_tag.stripped_strings
-                    ).split("\"", maxsplit=2)[1].lower()
-                    # split("\"", maxsplit=2)[1] here does this:
-                    # '1. "Title" by author' -> 'Title'
-                    == lower_demon_name
+                    handler_helpers.get_demon_name_from_demon_tag(
+                        demon_info_tag
+                    ).lower() == lower_demon_name
                 ):
                     return HandlingResult(
                         handler_helpers.get_mobile_demon_info_from_tag(
