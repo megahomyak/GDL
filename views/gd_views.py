@@ -24,9 +24,13 @@ async def get_user_as_readable_string(user: gd.User) -> str:
     except gd.MissingAccess:
         last_user_levels_str = ""
     else:
-        last_user_levels_str = (
-            f"\n- Последние 3 уровня игрока: {', '.join(level_names_in_quotes)}"
-        )
+        if level_names_in_quotes:
+            last_user_levels_str = (
+                f"\n- Последние 3 уровня игрока: "
+                f"{', '.join(level_names_in_quotes)}"
+            )
+        else:
+            last_user_levels_str = ""
     return (
         f"• Игрок {user.name}{role}:\n"
         f"\n"
