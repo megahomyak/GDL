@@ -101,9 +101,9 @@ class PCDemonInfo(CompactPCDemonInfo):
             " отсутствует"
         ) if self.video_link is None else f": {self.video_link}"
         return (
-            f"{self.name}:\n"
-            f"Опубликован {self.publisher}, верифнут {self.verifier}.\n"
-            f"Место в топе: {self.place_in_list}\n"
+            f"• Статистика для уровня \"{self.name}\":\n"
+            f"- Опубликован {self.publisher}, верифнут {self.verifier}.\n"
+            f"- Место в топе: {self.place_in_list}\n"
             f"\n"
             f"• Видео{video_part}\n"
             f"\n"
