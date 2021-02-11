@@ -272,8 +272,8 @@ class MainLogic:
                     *command_.get_converted_constant_metadata(
                         self.constant_context
                     ),
-                    *command_.fillers,
-                    *converted_command.arguments
+                    *converted_command.arguments,
+                    *command_.fillers
                 )
                 return handling_result.to_message(current_chat_peer_id)
         if error_args_amount == 0:
