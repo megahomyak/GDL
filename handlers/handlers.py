@@ -165,7 +165,7 @@ class Handlers:
             )
         except gd.MissingAccess:
             return HandlingResult(
-                f"Пользователь с ником {player_name} не найден!"
+                f"Пользователь с ником \"{player_name}\" не найден!"
             )
 
     async def get_level_info_by_name(self, level_name: str) -> HandlingResult:
@@ -173,7 +173,7 @@ class Handlers:
             level = await self.gd_worker.get_level_by_name(level_name)
         except gd_worker.LevelNotFound:
             return HandlingResult(
-                f"Уровня с названием {level_name} не найдено!"
+                f"Уровня с названием \"{level_name}\" не найдено!"
             )
         else:
             return HandlingResult(
@@ -205,7 +205,7 @@ class Handlers:
                     )
                 )
         return HandlingResult(
-            f"Демон с названием {demon_name} не найден в ПК-демонлисте!"
+            f"Демон с названием \"{demon_name}\" не найден в ПК-демонлисте!"
         )
 
     async def get_mobile_demon_info_by_demon_name(
@@ -219,7 +219,7 @@ class Handlers:
         while True:
             if demon_info_tag is None:
                 return HandlingResult(
-                    f"Демон с названием {demon_name} не найден в мобильном "
+                    f"Демон с названием \"{demon_name}\" не найден в мобильном "
                     f"демонлисте!"
                 )
             else:
