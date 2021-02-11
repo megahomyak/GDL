@@ -10,7 +10,7 @@ from handlers.handler_helpers import (
 from main_logic_helpers import CommandsSection
 from requests_workers import gd_worker
 from requests_workers.requests_worker import RequestsWorker
-from views import gd_views
+from text_generators import gd_text_generators
 from vk import vk_config
 
 MOBILE_DEMONS_AMOUNT = 100
@@ -158,9 +158,11 @@ class Handlers:
 
     async def get_player_info(self, player_name: str) -> HandlingResult:
         try:
-            return HandlingResult(await gd_views.get_user_as_readable_string(
-                await self.gd_worker.get_player(player_name)
-            ))
+            return HandlingResult(
+                await gd_text_generators.get_user_as_readable_string(
+                    await self.gd_worker.get_player(player_name)
+                )
+            )
         except gd.MissingAccess:
             return HandlingResult(
                 f"Пользователь с ником {player_name} не найден!"
@@ -175,7 +177,7 @@ class Handlers:
             )
         else:
             return HandlingResult(
-                await gd_views.get_level_as_readable_string(level)
+                await gd_text_generators.get_level_as_readable_string(level)
             )
 
     async def get_level_info_by_id(self, level_id: int) -> HandlingResult:
@@ -185,7 +187,7 @@ class Handlers:
             return HandlingResult(f"Уровня с айди {level_id} не существует!")
         else:
             return HandlingResult(
-                await gd_views.get_level_as_readable_string(level)
+                await gd_text_generators.get_level_as_readable_string(level)
             )
 
     async def get_pc_demon_info_by_demon_name(
