@@ -105,7 +105,8 @@ class MainLogic:
                         names=("мдемонлист", "mdemonlist"),
                         handler=handlers.get_mobile_demonlist,
                         description=(
-                            "показывает список демонов из мобильного демонлиста"
+                            "показывает список демонов из мобильного "
+                            "демонлиста, ограниченный до указанной позиции"
                         ),
                         arguments=(
                             Arg(
@@ -120,7 +121,7 @@ class MainLogic:
                         handler=handlers.get_mobile_demon_info,
                         description=(
                             "показывает информацию о демоне из мобильного "
-                            "демонлиста по номеру"
+                            "демонлиста"
                         ),
                         arguments=(
                             Arg(
@@ -135,7 +136,7 @@ class MainLogic:
                         handler=handlers.get_mobile_demon_info_by_demon_name,
                         description=(
                             "показывает информацию о демоне из мобильного "
-                            "демонлиста по названию"
+                            "демонлиста"
                         ),
                         arguments=(
                             Arg(
@@ -172,8 +173,7 @@ class MainLogic:
                         names=("демон", "demon"),
                         handler=handlers.get_pc_demon_info,
                         description=(
-                            "показывает информацию о демоне из ПК-демонлиста "
-                            "по номеру"
+                            "показывает информацию о демоне из ПК-демонлиста"
                         ),
                         arguments=(
                             Arg(
@@ -187,8 +187,7 @@ class MainLogic:
                         names=("демон", "demon"),
                         handler=handlers.get_pc_demon_info_by_demon_name,
                         description=(
-                            "показывает информацию о демоне из ПК-демонлиста "
-                            "по названию"
+                            "показывает информацию о демоне из ПК-демонлиста"
                         ),
                         arguments=(
                             Arg(
@@ -204,7 +203,7 @@ class MainLogic:
                     Command(
                         names=("игрок", "player"),
                         handler=handlers.get_player_info,
-                        description="показывает информацию об игроке по нику",
+                        description="показывает информацию об игроке",
                         arguments=(
                             Arg(
                                 "ник игрока", StringArgType()
@@ -214,9 +213,7 @@ class MainLogic:
                     Command(
                         names=("уровень", "level"),
                         handler=handlers.get_level_info_by_id,
-                        description=(
-                            "показывает информацию об уровне по его айди"
-                        ),
+                        description="показывает информацию об уровне",
                         arguments=(
                             Arg(
                                 "айди уровня (>0)", IntArgType(
@@ -228,9 +225,7 @@ class MainLogic:
                     Command(
                         names=("уровень", "level"),
                         handler=handlers.get_level_info_by_name,
-                        description=(
-                            "показывает информацию об уровне по его названию"
-                        ),
+                        description="показывает информацию об уровне",
                         arguments=(
                             Arg(
                                 "название уровня", StringArgType()
