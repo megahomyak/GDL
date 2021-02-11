@@ -98,8 +98,8 @@ class PCDemonInfo(CompactPCDemonInfo):
         ) if self.first_five_records else '<пусто>'
         records_ending = '\nи другие' if self.there_is_more_records else ''
         video_part = (
-            f": {self.video_link}"
-        ) if self.video_link is not None else " отсутствует"
+            " отсутствует"
+        ) if self.video_link is None else f": {self.video_link}"
         return (
             f"{self.name}:\n"
             f"Опубликован {self.publisher}, верифнут {self.verifier}.\n"
