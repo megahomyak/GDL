@@ -246,14 +246,18 @@ class Handlers:
             level_name, pages=[page_num - 1]
         )
         if levels:
+            levels_str = "\n".join(
+                f"- \"{level.name}\" от {level.creator}, айди - {level.id}"
+                for level in levels
+            )
             return HandlingResult(
-                "\n".join(
-                    f"- \"{level.name}\" от {level.creator}, айди - {level.id}"
-                    for level in levels
-                )
+                f"• Уровни по запросу \"{level_name}\" со страницы поиска "
+                f"номер {page_num}:\n"
+                f"\n"
+                f"{levels_str}"
             )
         else:
             return HandlingResult(
                 f"Уровней по запросу \"{level_name}\" на странице поиска "
-                f"{page_num} не найдено!"
+                f"номер {page_num} не найдено!"
             )
