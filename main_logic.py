@@ -246,7 +246,7 @@ class MainLogic:
                                 "название уровня", StringArgType()
                             ),
                             Arg(
-                                "номер страницы", IntArgType(
+                                "номер страницы (>0)", IntArgType(
                                     lexer.enums.IntTypes.GREATER_THAN_ZERO
                                 )
                             )
