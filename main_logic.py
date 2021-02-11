@@ -225,7 +225,10 @@ class MainLogic:
                     Command(
                         names=("уровень", "level"),
                         handler=handlers.get_level_info_by_name,
-                        description="показывает информацию об уровне",
+                        description=(
+                            "показывает информацию о первом попавшемся уровне "
+                            "из поиска GD по указанному названию"
+                        ),
                         arguments=(
                             Arg(
                                 "название уровня", StringArgType()
