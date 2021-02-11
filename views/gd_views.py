@@ -14,7 +14,7 @@ async def get_user_as_readable_string(user: gd.User) -> str:
             f"\n- Последний пост игрока: "
             f"\"{(await user.get_page_comments())[0].body}\""
         )
-    except gd.NothingFound:
+    except (gd.NothingFound, IndexError):
         last_user_post_str = ""
     try:
         level_names_in_quotes = (
