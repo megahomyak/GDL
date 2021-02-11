@@ -33,13 +33,15 @@ class VKWorker:
             for i in range(0, len(message.text), vk_config.SYMBOLS_PER_MESSAGE)
         )
         for part in text_parts:
+            # noinspection SpellCheckingInspection
             await self.vk.call_method(
                 "messages.send",
                 {
                     "peer_id": message.peer_id,
                     "message": part,
                     "random_id": random.randint(-1_000_000, 1_000_000),
-                    "disable_mentions": 1
+                    "disable_mentions": 1,
+                    "dont_parse_links": 1
                 }
             )
         if self.logger is not None:
