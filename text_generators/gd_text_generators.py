@@ -1,5 +1,9 @@
 import gd
 
+import utils
+
+STARS_WORDS = ("звезда", "звезды", "звезд")
+
 
 async def get_user_as_readable_string(user: gd.User) -> str:
     if user.role == gd.StatusLevel.MODERATOR:
@@ -45,13 +49,20 @@ async def get_user_as_readable_string(user: gd.User) -> str:
     )
 
 
-async def get_level_as_readable_string(level: gd.Level) -> str:
+async def get_level_as_readable_string(
+        level: gd.Level, level_is_refreshed: bool = False) -> str:
+    """
+    level_is_refreshed means that `await level.refresh()` is used.
+    You need to refresh a level to get its password (and other data, which isn't
+    needed for this function)
+    """
     description_str = (
         f"Описание: \"{level.description}\""
     ) if level.description else "Описание отсутствует"
+    rating = level.rating
     likes_amount_str = (
-        f'Дизлайков: {-level.rating}'
-    ) if level.rating < 0 else f'Лайков: {level.rating}'
+        f'Дизлайков: {-rating}'
+    ) if rating < 0 else f'Лайков: {rating}'
     top_three_comments = (
         await level.get_comments(gd.CommentStrategy.MOST_LIKED)
     )[0:3]
@@ -72,12 +83,39 @@ async def get_level_as_readable_string(level: gd.Level) -> str:
         )
     else:
         most_liked_comments_str = ""
+    if not level_is_refreshed:
+        # To get a password (and other data, which I don't need)
+        await level.refresh()
+    password_str = (
+        f"- Пароль: {level.password}\n"
+    ) if level.password else ""
+    requested_stars = level.requested_stars
+    requested_stars_word = utils.get_plural(requested_stars, STARS_WORDS)
+    stars_amount = level.stars
+    if stars_amount:
+        if level.is_epic():
+            featured_or_epic_str = " [Epic]"
+        elif level.is_featured():
+            featured_or_epic_str = " [Featured]"
+        else:
+            featured_or_epic_str = ""
+        stars_word = utils.get_plural(stars_amount, STARS_WORDS)
+        rate_str = (
+            f"- Оценен на {stars_amount} {stars_word}{featured_or_epic_str}\n"
+        )
+    else:
+        rate_str = ""
     return (
         f"• Статистика для уровня \"{level.name}\":\n"
         f"\n"
         f"- Айди: {level.id}\n"
         f"- Автор: {level.creator.name}\n"
         f"- {description_str}\n"
+        # .desc is more readable than .name
+        f"- Сложность: {level.difficulty.desc} "
+        f"(запрошено {requested_stars} {requested_stars_word})\n"
+        f"{password_str}"
+        f"{rate_str}"
         f"- Музыка: \"{level.song.name}\", айди - {level.song.id}\n"
         f"- Скачиваний: {level.downloads}\n"
         f"- {likes_amount_str}"  # Likes or dislikes
