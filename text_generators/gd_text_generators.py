@@ -111,8 +111,8 @@ async def get_level_as_readable_string(
         f"- Айди: {level.id}\n"
         f"- Автор: {level.creator.name}\n"
         f"- {description_str}\n"
-        # .desc is more readable than .name
-        f"- Сложность: {level.difficulty.desc} "
+        # .title is more readable than .name
+        f"- Сложность: {level.difficulty.title} "
         f"(запрошено {requested_stars} {requested_stars_word})\n"
         f"{password_str}"
         f"{rate_str}"
