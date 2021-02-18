@@ -15,23 +15,25 @@ async def get_user_as_readable_string(user: gd.User) -> str:
     creator_points_str = f"\n- Очков создания: {user.cp}\n" if user.cp else ""
     try:
         last_user_post_str = (
-            f"\n- Последний пост игрока: "
+            f"\n\n- Последний пост игрока: "
             f"\"{(await user.get_page_comments())[0].body}\""
         )
     except (gd.NothingFound, IndexError):
         last_user_post_str = ""
     try:
-        level_names_in_quotes = (
-            f"\"{level.name}\""
-            for level in (await user.get_levels_on_page())[0:3]
+        level_names = (
+            level.name for level in (await user.get_levels_on_page())[0:3]
         )
     except gd.MissingAccess:
         last_user_levels_str = ""
     else:
-        if level_names_in_quotes:
+        if level_names:
+            level_names_str = "\n".join(
+                f"{level_number}) \"{level_name}\""
+                for level_number, level_name in enumerate(level_names, start=1)
+            )
             last_user_levels_str = (
-                f"\n- Последние 3 уровня игрока: "
-                f"{', '.join(level_names_in_quotes)}"
+                f"\n\n- Последние 3 уровня игрока:\n{level_names_str}"
             )
         else:
             last_user_levels_str = ""
