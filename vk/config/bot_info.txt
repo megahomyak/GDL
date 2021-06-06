@@ -3,8 +3,9 @@
 По всем проблемам с ботом - к автору.
 
 Ссылки:
+Бот - github.com/megahomyak/GDL
 Pointercrate api - pointercrate.com/documentation
 Демонлист - pointercrate.com/demonlist
 Мобильный демонлист - sites.google.com/view/gd-mobile-lists/top-50-demons-completed
-gd.py (для запросов к API GD) - github.com/NeKitDS/gd.py
+gd.py (для запросов к апи GD) - github.com/NeKitDS/gd.py
 Библиотека для работы с апи вк - github.com/megahomyak/simple_avk
