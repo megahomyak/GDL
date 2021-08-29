@@ -34,7 +34,40 @@ def get_mobile_demon_info_from_tag(
     f"""
     Class with one demon is "{CLASS_WITH_ONE_DEMON_NAME}"
     """
-    title, points, *completion_strings = tag.stripped_strings
+    stripped_strings = list(tag.stripped_strings)
+    print(stripped_strings)
+    probably_a_title = stripped_strings[0]
+    # Workarounds because of inconsistent formatting
+    if probably_a_title == "16. \"":
+        title = "".join(stripped_strings[:3])
+        points = stripped_strings[4]
+        completion_strings = stripped_strings[4:]
+    elif probably_a_title == "2":
+        title = "".join(stripped_strings[:7])
+        points = "".join(stripped_strings[7:10])
+        completion_strings = stripped_strings[10:]
+    elif probably_a_title == "34. \"":
+        title = "".join(stripped_strings[:4])
+        points = "".join(stripped_strings[4:7])
+        completion_strings = stripped_strings[7:]
+    elif probably_a_title == "46. \"":
+        title = "".join(stripped_strings[:4])
+        points = "".join(stripped_strings[4:7])
+        completion_strings = stripped_strings[7:]
+    elif probably_a_title == "78":
+        title = "".join(stripped_strings[:5])
+        points = "".join(stripped_strings[5:8])
+        completion_strings = stripped_strings[8:]
+    elif probably_a_title == "93":
+        title = "".join(stripped_strings[:6])
+        points = "".join(stripped_strings[6:9])
+        completion_strings = stripped_strings[9:]
+    elif probably_a_title == "9":
+        title = "".join(stripped_strings[:6])
+        points = "".join(stripped_strings[6:9])
+        completion_strings = stripped_strings[9:]
+    else:
+        title, points, *completion_strings = stripped_strings
     # '1. "Name" by author' -> ['1. ', 'Name', ' by author'] -> 'Name'
     divided_title = title.split("\"", maxsplit=2)
     demon_name = divided_title[1]
@@ -65,7 +98,9 @@ def get_mobile_demon_info_from_tag(
     # ["Nickname -", "https://you.rbutt/whTlVsmtR", "(666hz)"]
     # (They are not in the separate lists, [] just to be clear)
     for string in completion_strings:
-        if string.startswith("(") and string.endswith("hz)"):
+        if string == "-":
+            continue
+        elif string.startswith("(") and string.endswith("hz)"):
             pure_completions[-1].amount_of_hertz = int(string[1:-3])
         else:
             if completions_parsed == DEMON_RECORDS_OUTPUT_LIMIT:
@@ -77,7 +112,8 @@ def get_mobile_demon_info_from_tag(
                 last_nickname = None
                 completions_parsed += 1
             else:  # Part we're parsing now is a nickname
-                last_nickname = string[:-2]  # Removing " -"
+                if string.endswith(" -"):
+                    last_nickname = string[:-2]
     points_amount = float(points[2:-8])  # Removing "(~" and " points)"
     return dataclasses_.MobileDemonInfo(
         place_in_list=demon_num,
