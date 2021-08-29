@@ -35,7 +35,6 @@ def get_mobile_demon_info_from_tag(
     Class with one demon is "{CLASS_WITH_ONE_DEMON_NAME}"
     """
     stripped_strings = list(tag.stripped_strings)
-    print(stripped_strings)
     probably_a_title = stripped_strings[0]
     # Workarounds because of inconsistent formatting
     if probably_a_title == "16. \"":
