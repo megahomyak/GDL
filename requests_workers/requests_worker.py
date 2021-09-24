@@ -3,7 +3,7 @@ from typing import List, Dict, Any
 import aiohttp
 import bs4
 
-POINTERCRATE_DEMONS_LINK = "https://pointercrate.com/api/v1/demons/"
+POINTERCRATE_DEMONS_LINK = "https://pointercrate.com/api/v2/demons/"
 POINTERCRATE_DEMONS_LIMIT = 100
 
 

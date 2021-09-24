@@ -154,7 +154,7 @@ def get_compact_pc_demonlist_from_json(
         ) -> Generator[dataclasses_.CompactPCDemonInfo, None, None]:
     return (
         dataclasses_.CompactPCDemonInfo(
-            place_in_list=demon_info["position"],
+            place_in_list=demon_info["id"],
             name=demon_info["name"], publisher=demon_info["publisher"]["name"]
         )
         for demon_info in json_

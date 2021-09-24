@@ -201,7 +201,7 @@ class Handlers:
                 return await (
                     self.helpers_with_dependencies
                     .get_handling_result_about_pc_demon(
-                        demon_info["position"]
+                        demon_info["id"]
                     )
                 )
         return HandlingResult(
