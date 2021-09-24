@@ -179,7 +179,7 @@ def get_pc_demon_from_json(json_: Dict[str, Any]) -> dataclasses_.PCDemonInfo:
         for record_info in json_["records"][:DEMON_RECORDS_OUTPUT_LIMIT]
     ]
     return dataclasses_.PCDemonInfo(
-        place_in_list=json_["position"],
+        place_in_list=json_["id"],
         name=json_["name"], publisher=json_["publisher"]["name"],
         verifier=json_["verifier"]["name"],
         first_ten_authors_names=first_ten_authors_names,
