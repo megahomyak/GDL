@@ -37,26 +37,78 @@ def get_mobile_demon_info_from_tag(
     stripped_strings = list(tag.stripped_strings)
     probably_a_title = stripped_strings[0]
     # Workarounds because of inconsistent formatting
-    if probably_a_title == "16. \"":
+    if probably_a_title == "1. \"":
+        title = "".join(stripped_strings[:4])
+        points = stripped_strings[4]
+        completion_strings = stripped_strings[5:]
+    elif probably_a_title == "2. \"":
+        title = "".join(stripped_strings[:4])
+        points = stripped_strings[4]
+        completion_strings = stripped_strings[5:]
+    elif probably_a_title == "4":
+        title = "".join(stripped_strings[:2])
+        points = stripped_strings[2]
+        completion_strings = stripped_strings[3:]
+    elif probably_a_title == "11":
+        title = "".join(stripped_strings[:2])
+        points = stripped_strings[2]
+        completion_strings = stripped_strings[3:]
+    elif probably_a_title == "16. \"":
         title = "".join(stripped_strings[:3])
         points = stripped_strings[4]
         completion_strings = stripped_strings[4:]
-    elif probably_a_title == "2":
-        title = "".join(stripped_strings[:7])
-        points = "".join(stripped_strings[7:10])
-        completion_strings = stripped_strings[10:]
+    elif probably_a_title == "1":  # 18
+        title = "".join(stripped_strings[:5])
+        points = stripped_strings[5]
+        completion_strings = stripped_strings[6:]
+    elif probably_a_title == "2":  # 22
+        title = "".join(stripped_strings[:6])
+        points = stripped_strings[6]
+        completion_strings = stripped_strings[7:]
+    elif probably_a_title == "30":
+        title = "".join(stripped_strings[:6])
+        points = stripped_strings[6]
+        completion_strings = stripped_strings[7:]
+    elif probably_a_title == "3":  # 33
+        title = "".join(stripped_strings[:6])
+        points = stripped_strings[6]
+        completion_strings = stripped_strings[7:]
     elif probably_a_title == "34. \"":
         title = "".join(stripped_strings[:4])
         points = "".join(stripped_strings[4:7])
         completion_strings = stripped_strings[7:]
-    elif probably_a_title == "46. \"":
-        title = "".join(stripped_strings[:4])
-        points = "".join(stripped_strings[4:7])
-        completion_strings = stripped_strings[7:]
+    elif probably_a_title == "40":
+        title = "".join(stripped_strings[:5])
+        points = stripped_strings[5]
+        completion_strings = stripped_strings[6:]
+    elif probably_a_title == "46":
+        title = "".join(stripped_strings[:5])
+        points = stripped_strings[5]
+        completion_strings = stripped_strings[6:]
+    elif probably_a_title == "50":
+        title = "".join(stripped_strings[:5])
+        points = stripped_strings[5]
+        completion_strings = stripped_strings[6:]
+    elif probably_a_title == "54":
+        title = "".join(stripped_strings[:5])
+        points = stripped_strings[5]
+        completion_strings = stripped_strings[6:]
     elif probably_a_title == "78":
         title = "".join(stripped_strings[:5])
         points = "".join(stripped_strings[5:8])
         completion_strings = stripped_strings[8:]
+    elif probably_a_title == "8":  # 81
+        title = "".join(stripped_strings[:6])
+        points = stripped_strings[6]
+        completion_strings = stripped_strings[7:]
+    elif probably_a_title == "84":
+        title = "".join(stripped_strings[:6])
+        points = stripped_strings[6]
+        completion_strings = stripped_strings[7:]
+    elif probably_a_title == "88":
+        title = "".join(stripped_strings[:5])
+        points = stripped_strings[5]
+        completion_strings = stripped_strings[6:]
     elif probably_a_title == "93":
         title = "".join(stripped_strings[:6])
         points = "".join(stripped_strings[6:9])
@@ -101,18 +153,19 @@ def get_mobile_demon_info_from_tag(
             continue
         elif string.startswith("(") and string.endswith("hz)"):
             pure_completions[-1].amount_of_hertz = int(string[1:-3])
-        else:
-            if completions_parsed == DEMON_RECORDS_OUTPUT_LIMIT:
-                break
-            if last_nickname:  # Part we're parsing now is YT link
-                pure_completions.append(dataclasses_.Completion(
-                    nickname=last_nickname, video_link=string
-                ))
-                last_nickname = None
-                completions_parsed += 1
-            else:  # Part we're parsing now is a nickname
-                if string.endswith(" -"):
-                    last_nickname = string[:-2]
+        elif completions_parsed == DEMON_RECORDS_OUTPUT_LIMIT:
+            break
+        elif last_nickname:  # Part we're parsing now is YT link
+            pure_completions.append(dataclasses_.Completion(
+                nickname=last_nickname, video_link=string
+            ))
+            last_nickname = None
+            completions_parsed += 1
+        else:  # Part we're parsing now is a nickname
+            if string.endswith(" -"):
+                last_nickname = string[:-2]
+            else:
+                last_nickname = string
     points_amount = float(points[2:-8])  # Removing "(~" and " points)"
     return dataclasses_.MobileDemonInfo(
         place_in_list=demon_num,
