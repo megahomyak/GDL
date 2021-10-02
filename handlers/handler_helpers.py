@@ -1,3 +1,4 @@
+import re
 from dataclasses import dataclass
 from typing import Generator, Union, List, Optional, Dict, Any
 
@@ -13,6 +14,11 @@ from vk.dataclasses_ import Message
 # noinspection SpellCheckingInspection
 # because it uses machine-generated tag class names
 CLASS_WITH_ONE_DEMON_NAME = "vhaaFf qUO6Ue"
+# noinspection SpellCheckingInspection
+COMPLETION_STRINGS_CLASS_NAME = (
+    "hJDwNd-AhqUyc-uQSCkd jXK9ad D2fZ2 wHaque GNzUNc"
+)
+POINTS_REGEX = re.compile(r".+\(~(.+) ?points\)")
 
 AnyMobileDemonInfo = Union[
     dataclasses_.MobileDemonInfo, dataclasses_.CompactMobileDemonInfo
@@ -28,105 +34,26 @@ class HandlingResult:
         return Message(self.text, peer_id)
 
 
+def get_mobile_demon_title_from_tag(tag: bs4.Tag):
+    return tag.find(class_="tyJCtd mGzaTb baZpAe").text
+
+
 def get_mobile_demon_info_from_tag(
         tag: bs4.Tag, demon_num: int,
         get_compact_demon_info: bool = False) -> AnyMobileDemonInfo:
     f"""
     Class with one demon is "{CLASS_WITH_ONE_DEMON_NAME}"
     """
-    stripped_strings = list(tag.stripped_strings)
-    probably_a_title = stripped_strings[0]
-    # Workarounds because of inconsistent formatting
-    if probably_a_title == "1. \"":
-        title = "".join(stripped_strings[:4])
-        points = stripped_strings[4]
-        completion_strings = stripped_strings[5:]
-    elif probably_a_title == "2. \"":
-        title = "".join(stripped_strings[:4])
-        points = stripped_strings[4]
-        completion_strings = stripped_strings[5:]
-    elif probably_a_title == "4":
-        title = "".join(stripped_strings[:2])
-        points = stripped_strings[2]
-        completion_strings = stripped_strings[3:]
-    elif probably_a_title == "11":
-        title = "".join(stripped_strings[:2])
-        points = stripped_strings[2]
-        completion_strings = stripped_strings[3:]
-    elif probably_a_title == "16. \"":
-        title = "".join(stripped_strings[:3])
-        points = stripped_strings[4]
-        completion_strings = stripped_strings[4:]
-    elif probably_a_title == "1":  # 18
-        title = "".join(stripped_strings[:5])
-        points = stripped_strings[5]
-        completion_strings = stripped_strings[6:]
-    elif probably_a_title == "2":  # 22
-        title = "".join(stripped_strings[:6])
-        points = stripped_strings[6]
-        completion_strings = stripped_strings[7:]
-    elif probably_a_title == "30":
-        title = "".join(stripped_strings[:6])
-        points = stripped_strings[6]
-        completion_strings = stripped_strings[7:]
-    elif probably_a_title == "3":  # 33
-        title = "".join(stripped_strings[:6])
-        points = stripped_strings[6]
-        completion_strings = stripped_strings[7:]
-    elif probably_a_title == "34. \"":
-        title = "".join(stripped_strings[:4])
-        points = "".join(stripped_strings[4:7])
-        completion_strings = stripped_strings[7:]
-    elif probably_a_title == "40":
-        title = "".join(stripped_strings[:5])
-        points = stripped_strings[5]
-        completion_strings = stripped_strings[6:]
-    elif probably_a_title == "46":
-        title = "".join(stripped_strings[:5])
-        points = stripped_strings[5]
-        completion_strings = stripped_strings[6:]
-    elif probably_a_title == "50":
-        title = "".join(stripped_strings[:5])
-        points = stripped_strings[5]
-        completion_strings = stripped_strings[6:]
-    elif probably_a_title == "54":
-        title = "".join(stripped_strings[:5])
-        points = stripped_strings[5]
-        completion_strings = stripped_strings[6:]
-    elif probably_a_title == "78":
-        title = "".join(stripped_strings[:5])
-        points = "".join(stripped_strings[5:8])
-        completion_strings = stripped_strings[8:]
-    elif probably_a_title == "8":  # 81
-        title = "".join(stripped_strings[:6])
-        points = stripped_strings[6]
-        completion_strings = stripped_strings[7:]
-    elif probably_a_title == "84":
-        title = "".join(stripped_strings[:6])
-        points = stripped_strings[6]
-        completion_strings = stripped_strings[7:]
-    elif probably_a_title == "88":
-        title = "".join(stripped_strings[:5])
-        points = stripped_strings[5]
-        completion_strings = stripped_strings[6:]
-    elif probably_a_title == "93":
-        title = "".join(stripped_strings[:6])
-        points = "".join(stripped_strings[6:9])
-        completion_strings = stripped_strings[9:]
-    elif probably_a_title == "9":
-        title = "".join(stripped_strings[:6])
-        points = "".join(stripped_strings[6:9])
-        completion_strings = stripped_strings[9:]
-    else:
-        title, points, *completion_strings = stripped_strings
+    demon_title = get_mobile_demon_title_from_tag(tag)
     # '1. "Name" by author' -> ['1. ', 'Name', ' by author'] -> 'Name'
-    divided_title = title.split("\"", maxsplit=2)
-    demon_name = divided_title[1]
-    if divided_title[2][1:6] == "(old)":
-        authors_string = divided_title[2][10:]  # Removing " (old) by "
+    divided_name = demon_title.split("\"", maxsplit=2)
+    demon_name = divided_name[1]
+    after_name = divided_name[2]
+    if after_name[1:6] == "(old)":
+        authors_string = after_name[10:]  # Removing " (old) by "
         is_old = True
     else:
-        authors_string = divided_title[2][4:]  # Removing " by "
+        authors_string = after_name[4:]  # Removing " by "
         is_old = False
     if authors_string.endswith("& more"):
         authors_string = authors_string[:-7]  # Removing " & more"
@@ -143,30 +70,40 @@ def get_mobile_demon_info_from_tag(
     pure_completions = []
     last_nickname = None
     completions_parsed = 0
-    # One completion info can look like
-    # ["Nickname -", "https://you.rbutt/whTlVsmtR"]
-    # or like
-    # ["Nickname -", "https://you.rbutt/whTlVsmtR", "(666hz)"]
-    # (They are not in the separate lists, [] just to be clear)
-    for string in completion_strings:
+    hertz_string_parts = []
+    # noinspection SpellCheckingInspection
+    for string in tag.find(
+        class_=COMPLETION_STRINGS_CLASS_NAME
+    ).stripped_strings:
         if string == "-":
             continue
-        elif string.startswith("(") and string.endswith("hz)"):
-            pure_completions[-1].amount_of_hertz = int(string[1:-3])
-        elif completions_parsed == DEMON_RECORDS_OUTPUT_LIMIT:
-            break
-        elif last_nickname:  # Part we're parsing now is YT link
-            pure_completions.append(dataclasses_.Completion(
-                nickname=last_nickname, video_link=string
-            ))
-            last_nickname = None
-            completions_parsed += 1
-        else:  # Part we're parsing now is a nickname
-            if string.endswith(" -"):
-                last_nickname = string[:-2]
-            else:
-                last_nickname = string
-    points_amount = float(points[2:-8])  # Removing "(~" and " points)"
+        else:
+            if string.startswith("("):
+                hertz_string_parts.append(string)
+            if hertz_string_parts:
+                if not string.startswith("("):
+                    hertz_string_parts.append(string)
+                if string.endswith("hz)"):
+                    pure_completions[-1].amount_of_hertz = int(
+                        "".join(hertz_string_parts)[1:-3]
+                    )
+                    hertz_string_parts.clear()
+            elif completions_parsed == DEMON_RECORDS_OUTPUT_LIMIT:
+                break
+            elif last_nickname:  # Part we're parsing now is YT link
+                pure_completions.append(dataclasses_.Completion(
+                    nickname=last_nickname, video_link=string
+                ))
+                last_nickname = None
+                completions_parsed += 1
+            else:  # Part we're parsing now is a nickname
+                if string.endswith(" -"):
+                    last_nickname = string[:-2]
+                else:
+                    last_nickname = string
+    points_amount = float(
+        POINTS_REGEX.fullmatch(demon_title).group(1)
+    )
     return dataclasses_.MobileDemonInfo(
         place_in_list=demon_num,
         name=demon_name, is_old=is_old, authors=authors_string,
@@ -255,7 +192,7 @@ def get_demon_name_from_stripped_strings(
 
 
 def get_demon_name_from_demon_tag(tag: bs4.Tag) -> str:
-    return get_demon_name_from_stripped_strings(tag.stripped_strings)
+    return get_mobile_demon_title_from_tag(tag).split("\"", maxsplit=2)[1]
 
 
 class HandlerHelpersWithDependencies:
