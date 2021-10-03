@@ -14,9 +14,7 @@ class GDWorker:
         """
         Can throw gd.MissingAccess
         """
-        player = await self.gd_client.find_user(player_name)
-        full_player = await player.to_user()
-        return full_player
+        return await self.gd_client.search_user(player_name)
 
     async def get_level_by_id(self, level_id: int) -> gd.Level:
         """
