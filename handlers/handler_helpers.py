@@ -19,6 +19,15 @@ COMPLETION_STRINGS_CLASS_NAME = (
     "hJDwNd-AhqUyc-uQSCkd jXK9ad D2fZ2 wHaque GNzUNc"
 )
 POINTS_REGEX = re.compile(r".+\(~(.+) ?points\)")
+DEMON_NAME_REGEX = re.compile(
+    r"\d+\.\s*"  # Demon number
+    r"\"?(.+?)\"?\s+"  # Demon name
+    r"((?:by|\(old\)).+?)\s*"  # Demon authors + whether the demon is old or not
+    r"\(.+\)\s*"  # Points
+)
+AFTER_OLD_REGEX = re.compile(r"\(old\)\s*(.+)")
+AFTER_BY_REGEX = re.compile(r"by\s*(.+)")
+BEFORE_AND_MORE = re.compile(r"(.+?)\s*(?:and|&)\s*more")
 
 AnyMobileDemonInfo = Union[
     dataclasses_.MobileDemonInfo, dataclasses_.CompactMobileDemonInfo
@@ -45,18 +54,18 @@ def get_mobile_demon_info_from_tag(
     Class with one demon is "{CLASS_WITH_ONE_DEMON_NAME}"
     """
     demon_title = get_mobile_demon_title_from_tag(tag)
-    # '1. "Name" by author' -> ['1. ', 'Name', ' by author'] -> 'Name'
-    divided_name = demon_title.split("\"", maxsplit=2)
-    demon_name = divided_name[1]
-    after_name = divided_name[2]
-    if after_name[1:6] == "(old)":
-        authors_string = after_name[10:]  # Removing " (old) by "
+    demon_name, after_name = DEMON_NAME_REGEX.fullmatch(demon_title).groups()
+    match = AFTER_OLD_REGEX.fullmatch(after_name)
+    if match:
+        authors_string = match.group(1)
         is_old = True
     else:
-        authors_string = after_name[4:]  # Removing " by "
+        print(after_name)
+        authors_string = AFTER_BY_REGEX.fullmatch(after_name).group(1)
         is_old = False
-    if authors_string.endswith("& more"):
-        authors_string = authors_string[:-7]  # Removing " & more"
+    match = BEFORE_AND_MORE.fullmatch(authors_string)
+    if match:
+        authors_string = match.group(1)
         there_is_more_authors = True
     else:
         there_is_more_authors = False

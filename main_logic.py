@@ -406,6 +406,7 @@ async def main(debug: bool = False):
         if debug:
             await main_logic.send_commands_from_stdin()
         else:
+            print("Starting!")
             await main_logic.listen_for_vk_events()
 
 
