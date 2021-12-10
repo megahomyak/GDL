@@ -60,7 +60,6 @@ def get_mobile_demon_info_from_tag(
         authors_string = match.group(1)
         is_old = True
     else:
-        print(after_name)
         authors_string = AFTER_BY_REGEX.fullmatch(after_name).group(1)
         is_old = False
     match = BEFORE_AND_MORE.fullmatch(authors_string)
